@@ -23,7 +23,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile string
+	vs      string
+	rs      []string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -47,6 +51,7 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	fmt.Println("vs: ", vs, "  rs: ", rs)
 }
 
 func init() {
@@ -60,6 +65,8 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().StringVar(&vs, "vs", "", "virturl server like 10.54.0.2:6443")
+	rootCmd.Flags().StringSliceVar(&rs, "rs", []string{}, "virturl server like 192.168.0.2:6443")
 }
 
 // initConfig reads in config file and ENV variables if set.
