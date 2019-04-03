@@ -102,13 +102,13 @@ func (l *lvscare) AddRealServer(ip, port string) error {
 
 	d := Destination{
 		AddressFamily:   nl.FAMILY_V4,
-		Address:         ip,
-		Port:            p,
+		Address:         net.ParseIP(ip),
+		Port:            uint16(p),
 		Weight:          1,
 		ConnectionFlags: ConnectionFlagMasq,
 	}
 
-	err = i.NewDestination(l.service, &d)
+	err = handle.NewDestination(l.service, &d)
 	if err != nil {
 		return fmt.Errorf("new destination failed: %s", err)
 	}
