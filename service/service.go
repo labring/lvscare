@@ -1,5 +1,9 @@
 package service
 
+import (
+	"github.com/vishvananda/netlink"
+)
+
 //EndPoint  is
 type EndPoint struct {
 	IP   string
@@ -8,7 +12,7 @@ type EndPoint struct {
 
 //Lvser is
 type Lvser interface {
-	CreateInterface(name string, CRID string) error
+	CreateInterface(name string, CIRD string) error
 	CreateVirtualServer() error
 	AddRealServer(ip, port string) error
 	GetVirtualServer() (vs *EndPoint, rs *[]EndPoint)
@@ -21,8 +25,12 @@ type lvscare struct {
 	rs []EndPoint
 }
 
-func (l *lvscare) CreateInterface(name string, CRID string) error {
-	return nil
+func (l *lvscare) CreateInterface(name string, CIRD string) error {
+	kubeIpvs1, err := netlink.LinkByName(name)
+	addr, err := netlink.ParseAddr(CIRD)
+	netlink.AddrAdd(kubeIpvs1, addr)
+
+	return err
 }
 
 func (l *lvscare) CreateVirtualServer() error {
