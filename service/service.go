@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"net"
+	"strconv"
 	"syscall"
 
 	"github.com/vishvananda/netlink"
@@ -60,12 +61,16 @@ func (l *lvscare) CreateVirtualServer() error {
 	if err != nil {
 		return fmt.Errorf("New ipvs handle failed: %s", err)
 	}
+	p, err := strconv.Atoi(l.vs.Port)
+	if err != nil {
+		return fmt.Errorf("port is %s : %s", l.vs.Port, err)
+	}
 
 	s := Service{
 		AddressFamily: nl.FAMILY_V4,
 		SchedName:     RoundRobin,
 		Protocol:      syscall.IPPROTO_TCP,
-		Port:          l.vs.Port,
+		Port:          uint16(p),
 		Address:       net.ParseIP(l.vs.IP),
 		Netmask:       0xFFFFFFFF,
 	}
