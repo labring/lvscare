@@ -5,12 +5,12 @@ workspace:
     path: src/github.com/fanux/LVScare
 
 # go mod vender
+#environment: 
+#    GO111MODULE: on
 
 steps:
 - name: build
   image: golang:1.12.1
-  #environment: 
-  #    GO111MODULE: on
   commands:
       - go get -u
       - go build -o lvscare
