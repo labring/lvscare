@@ -10,9 +10,8 @@ workspace:
 
 steps:
 - name: build
-  image: golang:1.12.1
+  image: golang:1.11.3
   commands:
-      - go get -u
       - go build -o lvscare
 
 - name: publish
