@@ -15,7 +15,12 @@ func VsAndRsCreate(vs string, rs []string) error {
 	}
 	lvs := service.NewLvscare(ip, port)
 
-	err := lvs.CreateVirtualServer()
+	err := lvs.CreateInterface("sealyun-ipvs", ip+"/32")
+	if err != nil {
+		return err
+	}
+
+	err = lvs.CreateVirtualServer()
 	if err != nil {
 		return err
 	}
