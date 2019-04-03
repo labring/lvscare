@@ -105,7 +105,7 @@ func (l *lvscare) AddRealServer(ip, port string) error {
 		Address:         ip,
 		Port:            p,
 		Weight:          1,
-		ConnectionFlags: "Masq",
+		ConnectionFlags: ConnectionFlagMasq,
 	}
 
 	err = i.NewDestination(l.service, &d)
