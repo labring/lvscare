@@ -53,6 +53,8 @@ func (l *lvscare) CreateInterface(name string, CIRD string) error {
 }
 
 func (l *lvscare) CreateVirtualServer() error {
+	handle, err := New("")
+
 	return nil
 }
 
