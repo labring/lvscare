@@ -28,7 +28,7 @@ type lvscare struct {
 }
 
 func (l *lvscare) CreateInterface(name string, CIRD string) error {
-	interfa := &netlink.Device{LinkAttrs: netlink.LinkAttrs{Name: name}}
+	interfa := &netlink.Dummy{LinkAttrs: netlink.LinkAttrs{Name: name}}
 	err := netlink.LinkAdd(interfa)
 	if err != nil {
 		return fmt.Errorf("create net interface failed: %s", err)
