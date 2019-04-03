@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/vishvananda/netlink"
 )
 
@@ -27,7 +29,15 @@ type lvscare struct {
 
 func (l *lvscare) CreateInterface(name string, CIRD string) error {
 	kubeIpvs1, err := netlink.LinkByName(name)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("cird is: ", CIRD)
 	addr, err := netlink.ParseAddr(CIRD)
+	if err != nil {
+		return err
+	}
 	netlink.AddrAdd(kubeIpvs1, addr)
 
 	return err
