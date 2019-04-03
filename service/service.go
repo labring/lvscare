@@ -27,8 +27,9 @@ type Lvser interface {
 }
 
 type lvscare struct {
-	vs EndPoint
-	rs []EndPoint
+	vs      EndPoint
+	rs      []EndPoint
+	service *Service
 }
 
 func (l *lvscare) CreateInterface(name string, CIRD string) error {
@@ -80,10 +81,38 @@ func (l *lvscare) CreateVirtualServer() error {
 		return fmt.Errorf("New ipvs failed: %s", err)
 	}
 
+	l.service = &s
 	return nil
 }
 
 func (l *lvscare) AddRealServer(ip, port string) error {
+	handle, err := New("")
+	if err != nil {
+		return fmt.Errorf("New ipvs handle failed: %s", err)
+	}
+
+	p, err := strconv.Atoi(port)
+	if err != nil {
+		return fmt.Errorf("port is %s : %s", port, err)
+	}
+
+	if l.service == nil {
+		return fmt.Errorf("service is nil: %s", err)
+	}
+
+	d := Destination{
+		AddressFamily:   nl.FAMILY_V4,
+		Address:         ip,
+		Port:            p,
+		Weight:          1,
+		ConnectionFlags: "Masq",
+	}
+
+	err = i.NewDestination(l.service, &d)
+	if err != nil {
+		return fmt.Errorf("new destination failed: %s", err)
+	}
+
 	return nil
 }
 
