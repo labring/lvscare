@@ -28,17 +28,28 @@ type lvscare struct {
 }
 
 func (l *lvscare) CreateInterface(name string, CIRD string) error {
-	kubeIpvs1, err := netlink.LinkByName(name)
+	la := netlink.NewLinkAttrs()
+	la.Name = name
+	interfa := &netlink.Device{LinkAttrs: la}
+	err := netlink.LinkAdd(interfa)
 	if err != nil {
-		return err
+		return fmt.Errorf("create net interface failed: %s", err)
+	}
+
+	kubeIpvs, err := netlink.LinkByName(name)
+	if err != nil {
+		return fmt.Errorf("get interface failed: %s", err)
 	}
 
 	fmt.Println("cird is: ", CIRD)
 	addr, err := netlink.ParseAddr(CIRD)
 	if err != nil {
-		return err
+		return fmt.Errorf("CIRD failed: %s", err)
 	}
-	netlink.AddrAdd(kubeIpvs1, addr)
+	err = netlink.AddrAdd(kubeIpvs, addr)
+	if err != nil {
+		return fmt.Errorf("bind IP addr failed: %s", err)
+	}
 
 	return err
 }
