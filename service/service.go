@@ -106,7 +106,7 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs *[]EndPoint) {
 	}
 
 	for _, svc := range svcArray {
-		fmt.Printf("check svc ip: %s, port %s", svc.Address.String(), svc.Port)
+		fmt.Printf("check svc ip: %s, port %v\n", svc.Address.String(), svc.Port)
 		if svc.Address.String() == l.service.Address.String() && svc.Port == l.service.Port {
 			return &l.vs, &l.rs
 		}
@@ -130,12 +130,12 @@ func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint) {
 
 	dstArray, err := l.handle.GetDestinations(l.service)
 	if err != nil {
-		fmt.Printf("get real servers failed %s : %s", ip, port)
+		fmt.Printf("get real servers failed %s : %s\n", ip, port)
 		return nil
 	}
 
 	for _, dst := range dstArray {
-		fmt.Printf("check realserver ip: %s, port %s", dst.Address.String(), dst.Port)
+		fmt.Printf("check realserver ip: %s, port %s\n", dst.Address.String(), dst.Port)
 		if dst.Address.Equal(dip) && dst.Port == dport {
 			return &EndPoint{IP: ip, Port: port}
 		}
