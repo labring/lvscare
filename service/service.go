@@ -167,7 +167,7 @@ func (l *lvscare) RemoveRealServer(ip, port string) error {
 }
 
 func (l *lvscare) healthCheck(ip, port, path, shem string) bool {
-	return utils.IsKubeAPIHealth(ip, port, path, shem)
+	return utils.IsHTTPAPIHealth(ip, port, path, shem)
 }
 
 func (l *lvscare) CheckRealServers(path, schem string) {
