@@ -9,15 +9,15 @@ import (
 
 //VsAndRsCreate is
 func VsAndRsCreate(vs string, rs []string) error {
-	ip, port := utils.SplitServer(vs)
-	if ip == "" || port == "" {
-		return fmt.Errorf("ip and port is null")
-	}
-	lvs := service.NewLvscare(ip, port)
-
-	err := lvs.CreateInterface("sealyun-ipvs", ip+"/32")
+	ip, _ := utils.SplitServer(vs)
+	lvs, err := service.BuildLvscare(vs, rs)
 	if err != nil {
-		return err
+		return fmt.Errorf("build lvs failed: %s", err)
+	}
+
+	err = lvs.CreateInterface("sealyun-ipvs", ip+"/32")
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	err = lvs.CreateVirtualServer()
