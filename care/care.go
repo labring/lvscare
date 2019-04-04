@@ -14,7 +14,7 @@ func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) 
 		return err
 	}
 
-	t := time.NewTicker(beat * time.Second)
+	t := time.NewTicker(time.Duration(beat) * time.Second)
 	for {
 		select {
 		case <-t.C:

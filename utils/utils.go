@@ -19,6 +19,7 @@ func SplitServer(server string) (string, string) {
 }
 
 //IsKubeAPIHealth check Http GET is return 200 OK
+/*
 func IsKubeAPIHealth(ip, port, path, schem string) bool {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	url := fmt.Sprintf("%s://%s:%s%s", schem, ip, port, path)
@@ -36,6 +37,7 @@ func IsKubeAPIHealth(ip, port, path, schem string) bool {
 
 	return string(body) == "ok"
 }
+*/
 
 //IsHTTPAPIHealth is check http error
 func IsHTTPAPIHealth(ip, port, path, schem string) bool {

@@ -27,7 +27,7 @@ type Lvser interface {
 	GetRealServer(ip, port string) (rs *EndPoint)
 	RemoveRealServer(ip, port string) error
 
-	CheckRealServers(path string)
+	CheckRealServers(path, schem string)
 }
 
 type lvscare struct {
@@ -135,7 +135,7 @@ func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint) {
 	}
 
 	for _, dst := range dstArray {
-		fmt.Printf("check realserver ip: %s, port %s", svc.Address.String(), svc.Port)
+		fmt.Printf("check realserver ip: %s, port %s", dst.Address.String(), dst.Port)
 		if dst.Address.Equal(dip) && dst.Port == dport {
 			return &EndPoint{IP: ip, Port: port}
 		}
@@ -182,7 +182,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 			rs := l.GetRealServer(realServer.IP, realServer.Port)
 			if rs == nil {
 				//add it back
-				err = l.AddRealServer(realServer.IP, realServer.Port)
+				err := l.AddRealServer(realServer.IP, realServer.Port)
 				if err != nil {
 					fmt.Printf("add real server failed %s:%s", realServer.IP, realServer.Port)
 				}
@@ -191,8 +191,13 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 	}
 }
 
-//NewLvscare is
-func NewLvscare(ip, port string) (Lvser, error) {
+//BuildLvscare is
+func BuildLvscare(vs string, rs []string) (Lvser, error) {
+	ip, port := utils.SplitServer(vs)
+	if ip == "" || port == "" {
+		return nil, fmt.Errorf("virtual server ip and port is null")
+	}
+
 	l := &lvscare{
 		vs: EndPoint{IP: ip, Port: port},
 	}
@@ -217,31 +222,22 @@ func NewLvscare(ip, port string) (Lvser, error) {
 	}
 	l.handle = handle
 
-	return l, nil
-}
-
-//BuildLvscare is
-func BuildLvscare(vs string, rs []string) (Lvser, error) {
-	ip, port := utils.SplitServer(vs)
-	if ip == "" || port == "" {
-		return nil, fmt.Errorf("virtual server ip and port is null")
-	}
-
-	l, err := NewLvscare(ip, port)
-	if err != nil {
-		return nil, fmt.Errorf("new lvs care server failed : %s", err)
-	}
-
 	for _, r := range rs {
 		i, p := utils.SplitServer(r)
 		if i == "" || p == "" {
 			return nil, fmt.Errorf("real server ip and port is null")
 		}
+
+		iport, err := strconv.Atoi(p)
+		if err != nil {
+			return nil, fmt.Errorf("real server port failed: %s", err)
+		}
+
 		l.rs = append(l.rs, EndPoint{IP: i, Port: p})
 		l.destinations = append(l.destinations, &Destination{
 			AddressFamily:   nl.FAMILY_V4,
 			Address:         net.ParseIP(i),
-			Port:            uint16(p),
+			Port:            uint16(iport),
 			Weight:          1,
 			ConnectionFlags: ConnectionFlagMasq,
 		})
