@@ -48,11 +48,11 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// careCmd.PersistentFlags().String("foo", "", "A help for foo")
-	createCmd.Flags().StringVar(&VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
-	createCmd.Flags().StringSliceVar(&RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
+	careCmd.Flags().StringVar(&VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
+	careCmd.Flags().StringSliceVar(&RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
 
-	createCmd.Flags().StringVar(&HealthPath, "health-path", "/healthz", "health check path")
-	createCmd.Flags().StringVar(&HealthSchem, "health-schem", "https", "health check schem")
+	careCmd.Flags().StringVar(&HealthPath, "health-path", "/healthz", "health check path")
+	careCmd.Flags().StringVar(&HealthSchem, "health-schem", "https", "health check schem")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
