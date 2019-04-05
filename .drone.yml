@@ -14,6 +14,17 @@ steps:
   commands:
       - go build -o lvscare
 
+- name: publish-hub
+  image: plugins/docker
+  settings:
+    repo: fanux/lvscare
+    tags: ${DRONE_TAG=latest}
+    username:
+      from_secret: docker-hub-user
+    dockerfile: Dockerfile
+    password:
+      from_secret: docker-hub-pass
+
 - name: publish
   image: plugins/github-release
   settings:
