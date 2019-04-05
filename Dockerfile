@@ -1,3 +1,4 @@
-FROM alpine:3.9.2
-COPY lvscare /bin/lvscare
+FROM centos:7
+RUN yum install -y ipvsadm
+COPY lvscare /usr/bin/lvscare
 CMD ["lvscare"]
