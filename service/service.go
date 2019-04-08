@@ -24,7 +24,7 @@ type Lvser interface {
 	AddRealServer(ip, port string) error
 	GetVirtualServer() (vs *EndPoint, rs *[]EndPoint)
 	RemoveVirtualServer() error
-	GetRealServer(ip, port string) (rs *EndPoint)
+	GetRealServer(ip, port string) (rs *EndPoint, weight int)
 	RemoveRealServer(ip, port string) error
 
 	CheckRealServers(path, schem string)
@@ -119,32 +119,29 @@ func (l *lvscare) RemoveVirtualServer() error {
 	return nil
 }
 
-func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint) {
+func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint, weight int) {
 	dip := net.ParseIP(ip)
 	p, err := strconv.Atoi(port)
 	if err != nil {
 		fmt.Printf("port is %s : %s", port, err)
-		return nil
+		return nil, 0
 	}
 	dport := uint16(p)
 
 	dstArray, err := l.handle.GetDestinations(l.service)
 	if err != nil {
 		fmt.Printf("get real servers failed %s : %s\n", ip, port)
-		return nil
+		return nil, 0
 	}
 
 	for _, dst := range dstArray {
 		fmt.Printf("check realserver ip: %s, port %s\n", dst.Address.String(), dst.Port)
-		//TODO kube-porxy will change rs weight
-		if dst.Address.Equal(dip) && dst.Port == dport && dst.Weight == 1 {
-			return &EndPoint{IP: ip, Port: port}
-		} else if dst.Weight == 0 {
-			fmt.Println("	Warn: real server weight is 0")
+		if dst.Address.Equal(dip) && dst.Port == dport {
+			return &EndPoint{IP: ip, Port: port}, dst.Weight
 		}
 	}
 
-	return nil
+	return nil, 0
 }
 
 func (l *lvscare) RemoveRealServer(ip, port string) error {
@@ -182,8 +179,15 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 				fmt.Printf("remove real server failed %s:%s", realServer.IP, realServer.Port)
 			}
 		} else {
-			rs := l.GetRealServer(realServer.IP, realServer.Port)
-			if rs == nil {
+			rs, weight := l.GetRealServer(realServer.IP, realServer.Port)
+			if weight == 0 {
+				err := l.RemoveRealServer(realServer.IP, realServer.Port)
+				fmt.Println("remove weight = 0 real server")
+				if err != nil {
+					fmt.Println("	Error remove weight = 0 real server failed", realServer.IP, realServer.Port)
+				}
+			}
+			if rs == nil || weight == 0 {
 				//add it back
 				err := l.AddRealServer(realServer.IP, realServer.Port)
 				if err != nil {
