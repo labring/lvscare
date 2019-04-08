@@ -9,7 +9,7 @@ import (
 
 //VsAndRsCreate is
 func VsAndRsCreate(vs string, rs []string) error {
-	ip, _ := utils.SplitServer(vs)
+	//ip, _ := utils.SplitServer(vs)
 	lvs, err := service.BuildLvscare(vs, rs)
 	if err != nil {
 		return fmt.Errorf("build lvs failed: %s", err)
