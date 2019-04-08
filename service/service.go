@@ -136,8 +136,11 @@ func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint) {
 
 	for _, dst := range dstArray {
 		fmt.Printf("check realserver ip: %s, port %s\n", dst.Address.String(), dst.Port)
-		if dst.Address.Equal(dip) && dst.Port == dport {
+		//TODO kube-porxy will change rs weight
+		if dst.Address.Equal(dip) && dst.Port == dport && dst.Weight == 1 {
 			return &EndPoint{IP: ip, Port: port}
+		} else if dst.Weight == 0 {
+			fmt.Println("	Warn: real server weight is 0")
 		}
 	}
 
