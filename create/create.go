@@ -15,10 +15,12 @@ func VsAndRsCreate(vs string, rs []string) error {
 		return fmt.Errorf("build lvs failed: %s", err)
 	}
 
-	err = lvs.CreateInterface("sealyun-ipvs", ip+"/32")
-	if err != nil {
-		fmt.Println(err)
-	}
+	/*
+		err = lvs.CreateInterface("sealyun-ipvs", ip+"/32")
+		if err != nil {
+			fmt.Println(err)
+		}
+	*/
 
 	err = lvs.CreateVirtualServer()
 	if err != nil {
