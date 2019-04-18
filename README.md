@@ -23,7 +23,8 @@ lvscare care --vs 10.103.97.12:80 --rs 192.168.0.2:6443 --rs 192.168.0.3:6443 --
 ### Test
 If the realserver is on the same host, you need bind vip on a interface
 ```
-ip  addr add 10.103.97.12/32 dev kube-ipvs0
+ip link add sealyun-ipvs0 type dummy
+ip  addr add 10.103.97.12/32 dev sealyun-ipvs0
 ```
 
 Clean your environment:
