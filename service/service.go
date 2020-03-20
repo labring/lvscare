@@ -82,12 +82,17 @@ func (l *lvscare) AddRealServer(rs string) error {
 	l.rs = append(l.rs, rsEp)
 	realServer := l.buildRealServer(rs)
 	//vir server build
-	vServer := l.buildVirtualServer(l.vs.String())
-	err := l.handle.AddRealServer(vServer, realServer)
-	if err != nil {
-		return fmt.Errorf("new real server failed: %s", err)
+	if l.vs != nil {
+		vServer := l.buildVirtualServer(l.vs.String())
+		err := l.handle.AddRealServer(vServer, realServer)
+		if err != nil {
+			return fmt.Errorf("new real server failed: %s", err)
+		}
+		return nil
+	} else {
+		return fmt.Errorf("virtual server is empty.")
 	}
-	return nil
+
 }
 func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs []*EndPoint) {
 	virArray, err := l.handle.GetVirtualServers()
@@ -95,12 +100,16 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs []*EndPoint) {
 		fmt.Println("vir servers is nil", err)
 		return nil, nil
 	}
-	resultVirServer := l.buildVirtualServer(l.vs.String())
-	for _, vir := range virArray {
-		fmt.Printf("check vir ip: %s, port %v\n", vir.Address.String(), vir.Port)
-		if vir.String() == resultVirServer.String() {
-			return l.vs, l.rs
+	if l.vs != nil {
+		resultVirServer := l.buildVirtualServer(l.vs.String())
+		for _, vir := range virArray {
+			fmt.Printf("check vir ip: %s, port %v\n", vir.Address.String(), vir.Port)
+			if vir.String() == resultVirServer.String() {
+				return l.vs, l.rs
+			}
 		}
+	} else {
+		fmt.Printf("err: virtual server is empty.")
 	}
 	return
 }
