@@ -15,7 +15,7 @@ func SplitServer(server string) (string, uint16) {
 		fmt.Println("Error", s)
 		return "", 0
 	}
-	fmt.Printf("IP: %s, Port: %s", s[0], s[1])
+	fmt.Printf("IP: %s, Port: %s \n", s[0], s[1])
 	p, err := strconv.Atoi(s[1])
 	if err != nil {
 		fmt.Println("Error", err)

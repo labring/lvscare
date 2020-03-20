@@ -103,13 +103,13 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs []*EndPoint) {
 	if l.vs != nil {
 		resultVirServer := l.buildVirtualServer(l.vs.String())
 		for _, vir := range virArray {
-			fmt.Printf("check vir ip: %s, port %v\n", vir.Address.String(), vir.Port)
+			fmt.Printf("check vir ip: %s, port %v \n", vir.Address.String(), vir.Port)
 			if vir.String() == resultVirServer.String() {
 				return l.vs, l.rs
 			}
 		}
 	} else {
-		fmt.Printf("err: virtual server is empty.")
+		fmt.Printf("err: virtual server is empty.\n")
 	}
 	return
 }
@@ -126,7 +126,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 		if !l.healthCheck(ip, port, path, schem) {
 			err := l.RemoveRealServer(realServer.String())
 			if err != nil {
-				fmt.Printf("remove real server failed %s:%s", realServer.IP, realServer.Port)
+				fmt.Printf("remove real server failed %s:%d \n", realServer.IP, realServer.Port)
 			}
 		} else {
 			rs, weight := l.GetRealServer(realServer.String())
@@ -143,7 +143,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 				port := strconv.Itoa(int(realServer.Port))
 				err := l.AddRealServer(ip + ":" + port)
 				if err != nil {
-					fmt.Printf("add real server failed %s:%s", realServer.IP, realServer.Port)
+					fmt.Printf("add real server failed %s:%d \n", realServer.IP, realServer.Port)
 				}
 			}
 		}
@@ -160,7 +160,7 @@ func (l *lvscare) GetRealServer(rsHost string) (rs *EndPoint, weight int) {
 	}
 	dip := net.ParseIP(ip)
 	for _, dst := range dstArray {
-		fmt.Printf("check realserver ip: %s, port %d\n", dst.Address.String(), dst.Port)
+		fmt.Printf("check realserver ip: %s, port %d \n", dst.Address.String(), dst.Port)
 		if dst.Address.Equal(dip) && dst.Port == port {
 			return &EndPoint{IP: ip, Port: port}, dst.Weight
 		}

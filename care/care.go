@@ -10,7 +10,6 @@ import (
 //VsAndRsCare is
 func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) error {
 	lvs := service.BuildLvscare()
-
 	t := time.NewTicker(time.Duration(beat) * time.Second)
 	for {
 		select {
