@@ -27,7 +27,7 @@ import (
 	"syscall"
 
 	libipvs "github.com/docker/libnetwork/ipvs"
-	"github.com/fanux/LVScare/internal/klog"
+	"github.com/fanux/lvscare/internal/klog"
 )
 
 // runner implements ipvs.Interface.

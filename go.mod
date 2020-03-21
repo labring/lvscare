@@ -1,4 +1,4 @@
-module github.com/fanux/LVScare
+module github.com/fanux/lvscare
 
 go 1.13
 

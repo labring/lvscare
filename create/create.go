@@ -1,7 +1,7 @@
 package create
 
 import (
-	"github.com/fanux/LVScare/service"
+	"github.com/fanux/lvscare/service"
 	"github.com/wonderivan/logger"
 )
 

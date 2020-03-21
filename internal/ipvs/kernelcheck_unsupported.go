@@ -19,7 +19,7 @@ limitations under the License.
 package ipvs
 
 import (
-	utilsexec "github.com/fanux/LVScare/internal/exec"
+	utilsexec "github.com/fanux/lvscare/internal/exec"
 )
 
 // RequiredIPVSKernelModulesAvailableCheck tests IPVS required kernel modules.

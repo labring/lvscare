@@ -18,8 +18,8 @@ package ipvs
 
 import (
 	"fmt"
-	"github.com/fanux/LVScare/internal/exec"
-	"github.com/fanux/LVScare/internal/version"
+	"github.com/fanux/lvscare/internal/exec"
+	"github.com/fanux/lvscare/internal/version"
 	"net"
 	"strconv"
 	"strings"

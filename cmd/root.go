@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/fanux/LVScare/utils"
+	"github.com/fanux/lvscare/utils"
 	"github.com/wonderivan/logger"
 	"os"
 

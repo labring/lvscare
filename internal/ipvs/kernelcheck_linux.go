@@ -23,10 +23,10 @@ import (
 	"regexp"
 	"strings"
 
-	utilsexec "github.com/fanux/LVScare/internal/exec"
-	"github.com/fanux/LVScare/internal/sets"
+	utilsexec "github.com/fanux/lvscare/internal/exec"
+	"github.com/fanux/lvscare/internal/sets"
 
-	"github.com/fanux/LVScare/internal/klog"
+	"github.com/fanux/lvscare/internal/klog"
 	"github.com/lithammer/dedent"
 )
 

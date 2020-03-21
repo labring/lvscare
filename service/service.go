@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/fanux/LVScare/internal/ipvs"
-	"github.com/fanux/LVScare/utils"
+	"github.com/fanux/lvscare/internal/ipvs"
+	"github.com/fanux/lvscare/utils"
 	"github.com/wonderivan/logger"
 	"net"
 	"strconv"
