@@ -16,6 +16,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/fanux/LVScare/utils"
+	"github.com/wonderivan/logger"
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -54,9 +56,12 @@ func Execute() {
 	fmt.Println("vs: ", vs, "  rs: ", rs)
 }
 
+var logLevel string
+
 func init() {
 	cobra.OnInitialize(initConfig)
-
+	createCmd.Flags().StringVar(&logLevel, "logger", "EROR", "logger level: DEBG,INFO,EROR")
+	_ = logger.SetLogger(utils.Config(logLevel))
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.

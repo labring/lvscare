@@ -8,7 +8,7 @@ import (
 )
 
 //VsAndRsCare is
-func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) error {
+func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) {
 	lvs := service.BuildLvscare()
 	t := time.NewTicker(time.Duration(beat) * time.Second)
 	for {
@@ -17,7 +17,7 @@ func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) 
 			//check virturl server
 			service, _ := lvs.GetVirtualServer()
 			if service == nil {
-				create.VsAndRsCreate(vs, rs)
+				create.VsAndRsCreate(vs, rs, lvs)
 			}
 
 			//check real server
@@ -25,5 +25,4 @@ func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) 
 		}
 	}
 
-	return nil
 }

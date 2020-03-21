@@ -12,6 +12,7 @@ require (
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/vishvananda/netlink v1.1.0 // indirect
 	github.com/vishvananda/netns v0.0.0-00010101000000-000000000000 // indirect
+	github.com/wonderivan/logger v1.0.0
 	gotest.tools v2.2.0+incompatible // indirect
 )
 

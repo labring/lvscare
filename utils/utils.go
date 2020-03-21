@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/wonderivan/logger"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,13 +13,13 @@ import (
 func SplitServer(server string) (string, uint16) {
 	s := strings.Split(server, ":")
 	if len(s) != 2 {
-		fmt.Println("Error", s)
+		logger.Error("SplitServer error: len(s) is not two.")
 		return "", 0
 	}
-	fmt.Printf("IP: %s, Port: %s \n", s[0], s[1])
+	logger.Debug("SplitServer debug: IP: %s, Port: %s", s[0], s[1])
 	p, err := strconv.Atoi(s[1])
 	if err != nil {
-		fmt.Println("Error", err)
+		logger.Error("SplitServer error: ", err)
 		return "", 0
 	}
 	return s[0], uint16(p)
@@ -30,7 +31,7 @@ func IsHTTPAPIHealth(ip, port, path, schem string) bool {
 	url := fmt.Sprintf("%s://%s:%s%s", schem, ip, port, path)
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
+		logger.Debug("IsHTTPAPIHealth error: ", err)
 		return false
 	}
 	defer resp.Body.Close()

@@ -2,22 +2,30 @@ package create
 
 import (
 	"github.com/fanux/LVScare/service"
+	"github.com/wonderivan/logger"
 )
 
 //VsAndRsCreate is
-func VsAndRsCreate(vs string, rs []string) error {
+func VsAndRsCreate(vs string, rs []string, lvs service.Lvser) {
 	//ip, _ := utils.SplitServer(vs)
-	lvs := service.BuildLvscare()
-
+	if lvs == nil {
+		lvs = service.BuildLvscare()
+	}
+	var errs []string
 	err := lvs.CreateVirtualServer(vs)
+	//virtual server is exists
 	if err != nil {
-		return err
+		//can't return
+		errs = append(errs, err.Error())
 	}
 	for _, r := range rs {
-		err = lvs.AddRealServer(r)
+		err = lvs.AddRealServer(r, true)
 		if err != nil {
-			return err
+			errs = append(errs, err.Error())
 		}
 	}
-	return nil
+	if len(errs) != 0 {
+		logger.Error("VsAndRsCreate error:", errs)
+	}
+
 }
