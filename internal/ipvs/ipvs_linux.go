@@ -84,7 +84,7 @@ func (runner *runner) DeleteVirtualServer(vs *VirtualServer) error {
 	return runner.ipvsHandle.DelService(svc)
 }
 
-// GetVirtualServer is part of ipvs.Interface.
+// IsVirtualServerAvailable is part of ipvs.Interface.
 func (runner *runner) GetVirtualServer(vs *VirtualServer) (*VirtualServer, error) {
 	svc, err := toIPVSService(vs)
 	if err != nil {
@@ -130,7 +130,7 @@ func (runner *runner) Flush() error {
 	return runner.ipvsHandle.Flush()
 }
 
-// AddRealServer is part of ipvs.Interface.
+// CreateRealServer is part of ipvs.Interface.
 func (runner *runner) AddRealServer(vs *VirtualServer, rs *RealServer) error {
 	svc, err := toIPVSService(vs)
 	if err != nil {

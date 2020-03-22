@@ -12,14 +12,14 @@ func VsAndRsCreate(vs string, rs []string, lvs service.Lvser) {
 		lvs = service.BuildLvscare()
 	}
 	var errs []string
-	err := lvs.CreateVirtualServer(vs)
+	err := lvs.CreateVirtualServer(vs, true)
 	//virtual server is exists
 	if err != nil {
 		//can't return
 		errs = append(errs, err.Error())
 	}
 	for _, r := range rs {
-		err = lvs.AddRealServer(r, true)
+		err = lvs.CreateRealServer(r, true)
 		if err != nil {
 			errs = append(errs, err.Error())
 		}

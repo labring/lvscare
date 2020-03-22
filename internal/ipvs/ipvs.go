@@ -35,11 +35,11 @@ type Interface interface {
 	UpdateVirtualServer(*VirtualServer) error
 	// DeleteVirtualServer deletes the specified virtual server.  If the virtual server does not exist, return error.
 	DeleteVirtualServer(*VirtualServer) error
-	// Given a partial virtual server, GetVirtualServer will return the specified virtual server information in the system.
+	// Given a partial virtual server, IsVirtualServerAvailable will return the specified virtual server information in the system.
 	GetVirtualServer(*VirtualServer) (*VirtualServer, error)
 	// GetVirtualServers lists all virtual servers in the system.
 	GetVirtualServers() ([]*VirtualServer, error)
-	// AddRealServer creates the specified real server for the specified virtual server.
+	// CreateRealServer creates the specified real server for the specified virtual server.
 	AddRealServer(*VirtualServer, *RealServer) error
 	// GetRealServers returns all real servers for the specified virtual server.
 	GetRealServers(*VirtualServer) ([]*RealServer, error)

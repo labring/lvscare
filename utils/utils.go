@@ -3,7 +3,9 @@ package utils
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/fanux/lvscare/internal/ipvs"
 	"github.com/wonderivan/logger"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -38,4 +40,27 @@ func IsHTTPAPIHealth(ip, port, path, schem string) bool {
 
 	_ = resp
 	return true
+}
+
+func BuildVirtualServer(vip string) *ipvs.VirtualServer {
+	ip, port := SplitServer(vip)
+	virServer := &ipvs.VirtualServer{
+		Address:   net.ParseIP(ip),
+		Protocol:  "TCP",
+		Port:      port,
+		Scheduler: "rr",
+		Flags:     0,
+		Timeout:   0,
+	}
+	return virServer
+}
+
+func BuildRealServer(real string) *ipvs.RealServer {
+	ip, port := SplitServer(real)
+	realServer := &ipvs.RealServer{
+		Address: net.ParseIP(ip),
+		Port:    port,
+		Weight:  1,
+	}
+	return realServer
 }

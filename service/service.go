@@ -22,12 +22,14 @@ func (ep EndPoint) String() string {
 
 //Lvser is
 type Lvser interface {
-	CreateVirtualServer(vs string) error
-	GetVirtualServer() (vs *EndPoint, rs []*EndPoint)
+	CreateVirtualServer(vs string, config bool) error
+	IsVirtualServerAvailable(vs string) bool
+	DeleteVirtualServer(vs string, config bool) error
+
 	//config is config to lvscare struct
-	AddRealServer(rs string, config bool) error
+	CreateRealServer(rs string, config bool) error
 	//config is config to lvscare struct
-	RemoveRealServer(rs string, config bool) error
+	DeleteRealServer(rs string, config bool) error
 
 	CheckRealServers(path, schem string)
 }
@@ -38,37 +40,16 @@ type lvscare struct {
 	handle ipvs.Interface
 }
 
-func (l *lvscare) buildVirtualServer(vip string) *ipvs.VirtualServer {
-	ip, port := utils.SplitServer(vip)
-	virServer := &ipvs.VirtualServer{
-		Address:   net.ParseIP(ip),
-		Protocol:  "TCP",
-		Port:      port,
-		Scheduler: "rr",
-		Flags:     0,
-		Timeout:   0,
-	}
-	return virServer
-}
-
-func (l *lvscare) buildRealServer(real string) *ipvs.RealServer {
-	ip, port := utils.SplitServer(real)
-	realServer := &ipvs.RealServer{
-		Address: net.ParseIP(ip),
-		Port:    port,
-		Weight:  1,
-	}
-	return realServer
-}
-
-func (l *lvscare) CreateVirtualServer(vs string) error {
+func (l *lvscare) CreateVirtualServer(vs string, config bool) error {
 	virIp, virPort := utils.SplitServer(vs)
 	if virIp == "" || virPort == 0 {
 		logger.Error("CreateVirtualServer error: virtual server ip and port is empty")
 		return fmt.Errorf("virtual server ip and port is empty")
 	}
-	l.vs = &EndPoint{IP: virIp, Port: virPort}
-	vServer := l.buildVirtualServer(vs)
+	if config {
+		l.vs = &EndPoint{IP: virIp, Port: virPort}
+	}
+	vServer := utils.BuildVirtualServer(vs)
 	err := l.handle.AddVirtualServer(vServer)
 	if err != nil {
 		logger.Error("CreateVirtualServer error: ", err)
@@ -76,51 +57,68 @@ func (l *lvscare) CreateVirtualServer(vs string) error {
 	}
 	return nil
 }
+func (l *lvscare) DeleteVirtualServer(vs string, config bool) error {
+	vIP, vPort := utils.SplitServer(vs)
+	if vIP == "" || vPort == 0 {
+		logger.Error("DeleteVirtualServer error: real server ip and port is empty ")
+		return fmt.Errorf("virtual server ip and port is null")
+	}
+	virServer := utils.BuildVirtualServer(vs)
+	err := l.handle.DeleteVirtualServer(virServer)
+	if err != nil {
+		logger.Error("DeleteVirtualServer error: ", err)
+		return err
+	}
+	if config {
+		l.vs = nil
+	}
+	return nil
+}
 
-func (l *lvscare) AddRealServer(rs string, config bool) error {
+func (l *lvscare) CreateRealServer(rs string, config bool) error {
 	realIp, realPort := utils.SplitServer(rs)
 	if realIp == "" || realPort == 0 {
-		logger.Error("AddRealServer error: real server ip and port is empty")
+		logger.Error("CreateRealServer error: real server ip and port is empty")
 		return fmt.Errorf("real server ip and port is empty")
 	}
 	rsEp := &EndPoint{IP: realIp, Port: realPort}
 	if config {
 		l.rs = append(l.rs, rsEp)
 	}
-	realServer := l.buildRealServer(rs)
+	realServer := utils.BuildRealServer(rs)
 	//vir server build
 	if l.vs != nil {
-		vServer := l.buildVirtualServer(l.vs.String())
+		vServer := utils.BuildVirtualServer(l.vs.String())
 		err := l.handle.AddRealServer(vServer, realServer)
 		if err != nil {
-			logger.Error("AddRealServer error: ", err)
+			logger.Error("CreateRealServer error: ", err)
 			return fmt.Errorf("new real server failed: %s", err)
 		}
 		return nil
 	} else {
-		logger.Error("AddRealServer error: virtual server is empty.")
+		logger.Error("CreateRealServer error: virtual server is empty.")
 		return fmt.Errorf("virtual server is empty.")
 	}
 
 }
-func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs []*EndPoint) {
+func (l *lvscare) IsVirtualServerAvailable(vs string) bool {
 	virArray, err := l.handle.GetVirtualServers()
 	if err != nil {
-		logger.Error("GetVirtualServer error: vir servers is empty; ", err)
-		return nil, nil
+		logger.Error("IsVirtualServerAvailable error: vir servers is empty; ", err)
+		return false
 	}
 	if l.vs != nil {
-		resultVirServer := l.buildVirtualServer(l.vs.String())
+		resultVirServer := utils.BuildVirtualServer(vs)
 		for _, vir := range virArray {
-			logger.Debug("GetVirtualServer debug: check vir ip: %s, port %v ", vir.Address.String(), vir.Port)
+			logger.Debug("IsVirtualServerAvailable debug: check vir ip: %s, port %v ", vir.Address.String(), vir.Port)
 			if vir.String() == resultVirServer.String() {
-				return l.vs, l.rs
+				return true
 			}
 		}
 	} else {
-		logger.Error("GetVirtualServer error: virtual server is empty.")
+		logger.Error("IsVirtualServerAvailable error: virtual server is empty.")
 	}
-	return
+	return false
 }
 
 func (l *lvscare) healthCheck(ip, port, path, shem string) bool {
@@ -133,14 +131,14 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 		ip := realServer.IP
 		port := strconv.Itoa(int(realServer.Port))
 		if !l.healthCheck(ip, port, path, schem) {
-			err := l.RemoveRealServer(realServer.String(), false)
+			err := l.DeleteRealServer(realServer.String(), false)
 			if err != nil {
 				logger.Warn("CheckRealServers error: %s;  %d; %v ", realServer.IP, realServer.Port, err)
 			}
 		} else {
 			rs, weight := l.GetRealServer(realServer.String())
 			if weight == 0 {
-				err := l.RemoveRealServer(realServer.String(), false)
+				err := l.DeleteRealServer(realServer.String(), false)
 				logger.Debug("CheckRealServers debug: remove weight = 0 real server")
 				if err != nil {
 					logger.Warn("CheckRealServers error[remove weight = 0 real server failed]: %s;  %d; %v ", realServer.IP, realServer.Port, err)
@@ -150,7 +148,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 				//add it back
 				ip := realServer.IP
 				port := strconv.Itoa(int(realServer.Port))
-				err := l.AddRealServer(ip+":"+port, false)
+				err := l.CreateRealServer(ip+":"+port, false)
 				if err != nil {
 					logger.Warn("CheckRealServers error[add real server failed]: %s;  %d; %v ", realServer.IP, realServer.Port, err)
 				}
@@ -161,7 +159,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 
 func (l *lvscare) GetRealServer(rsHost string) (rs *EndPoint, weight int) {
 	ip, port := utils.SplitServer(rsHost)
-	vs := l.buildVirtualServer(l.vs.String())
+	vs := utils.BuildVirtualServer(l.vs.String())
 	dstArray, err := l.handle.GetRealServers(vs)
 	if err != nil {
 		logger.Error("GetRealServer error[get real server failed]: %s;  %d; %v ", ip, port, err)
@@ -178,22 +176,22 @@ func (l *lvscare) GetRealServer(rsHost string) (rs *EndPoint, weight int) {
 }
 
 //
-func (l *lvscare) RemoveRealServer(rs string, config bool) error {
+func (l *lvscare) DeleteRealServer(rs string, config bool) error {
 	realIp, realPort := utils.SplitServer(rs)
 	if realIp == "" || realPort == 0 {
-		logger.Error("RemoveRealServer error: real server ip and port is empty ")
+		logger.Error("DeleteRealServer error: real server ip and port is empty ")
 		return fmt.Errorf("real server ip and port is null")
 	}
 
 	if l.vs == nil {
-		logger.Error("RemoveRealServer error: virtual service is empty.")
+		logger.Error("DeleteRealServer error: virtual service is empty.")
 		return fmt.Errorf("virtual service is empty.")
 	}
-	virServer := l.buildVirtualServer(l.vs.String())
-	realServer := l.buildRealServer(rs)
+	virServer := utils.BuildVirtualServer(l.vs.String())
+	realServer := utils.BuildRealServer(rs)
 	err := l.handle.DeleteRealServer(virServer, realServer)
 	if err != nil {
-		logger.Error("RemoveRealServer error[real server delete error]: ", err)
+		logger.Error("DeleteRealServer error[real server delete error]: ", err)
 		return fmt.Errorf("real server delete error: %v", err)
 	}
 	if config {
