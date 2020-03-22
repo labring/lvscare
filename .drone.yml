@@ -33,6 +33,7 @@ steps:
     files: lvscare
     title: ${DRONE_TAG}
     note: Note.md
-    when:
-        event: tag
+  when:
+    event: 
+    - tag
 
