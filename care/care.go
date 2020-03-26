@@ -8,22 +8,24 @@ import (
 )
 
 //VsAndRsCare is
-func VsAndRsCare() {
+func (care *LvsCare) VsAndRsCare() {
 	lvs := service.BuildLvscare()
+	//set inner lvs
+	care.lvs = lvs
 	logger.Debug("VsAndRsCare DeleteVirtualServer")
-	err := lvs.DeleteVirtualServer(VirtualServer, false)
+	err := lvs.DeleteVirtualServer(care.VirtualServer, false)
 	logger.Warn("VsAndRsCare DeleteVirtualServer:", err)
-	if RunOnce {
-		createVsAndRs(VirtualServer, RealServer, lvs)
+	if care.RunOnce {
+		care.createVsAndRs()
 		return
 	}
-	t := time.NewTicker(time.Duration(Interval) * time.Second)
+	t := time.NewTicker(time.Duration(care.Interval) * time.Second)
 	for {
 		select {
 		case <-t.C:
-			createVsAndRs(VirtualServer, RealServer, lvs)
+			care.createVsAndRs()
 			//check real server
-			lvs.CheckRealServers(HealthPath, HealthSchem)
+			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
 		}
 	}
 }

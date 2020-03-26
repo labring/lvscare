@@ -6,23 +6,23 @@ import (
 )
 
 //createVsAndRs is
-func createVsAndRs(vs string, rs []string, lvs service.Lvser) {
+func (care *LvsCare) createVsAndRs() {
 	//ip, _ := utils.SplitServer(vs)
-	if lvs == nil {
-		lvs = service.BuildLvscare()
+	if care.lvs == nil {
+		care.lvs = service.BuildLvscare()
 	}
 	var errs []string
-	isAvailable := lvs.IsVirtualServerAvailable(VirtualServer)
+	isAvailable := care.lvs.IsVirtualServerAvailable(care.VirtualServer)
 	if !isAvailable {
-		err := lvs.CreateVirtualServer(vs, true)
+		err := care.lvs.CreateVirtualServer(care.VirtualServer, true)
 		//virtual server is exists
 		if err != nil {
 			//can't return
 			errs = append(errs, err.Error())
 		}
 	}
-	for _, r := range rs {
-		err := lvs.CreateRealServer(r, true)
+	for _, r := range care.RealServer {
+		err := care.lvs.CreateRealServer(r, true)
 		if err != nil {
 			errs = append(errs, err.Error())
 		}

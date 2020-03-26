@@ -30,7 +30,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		care.VsAndRsCare()
+		care.LVS.VsAndRsCare()
 	},
 }
 
@@ -41,13 +41,13 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// careCmd.PersistentFlags().String("foo", "", "A help for foo")
-	careCmd.Flags().BoolVar(&care.RunOnce, "run-once", false, "is run once mode")
-	careCmd.Flags().StringVar(&care.VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
-	careCmd.Flags().StringSliceVar(&care.RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
+	careCmd.Flags().BoolVar(&care.LVS.RunOnce, "run-once", false, "is run once mode")
+	careCmd.Flags().StringVar(&care.LVS.VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
+	careCmd.Flags().StringSliceVar(&care.LVS.RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
 
-	careCmd.Flags().StringVar(&care.HealthPath, "health-path", "/healthz", "health check path")
-	careCmd.Flags().StringVar(&care.HealthSchem, "health-schem", "https", "health check schem")
-	careCmd.Flags().Int32Var(&care.Interval, "interval", 5, "health check interval, unit is sec.")
+	careCmd.Flags().StringVar(&care.LVS.HealthPath, "health-path", "/healthz", "health check path")
+	careCmd.Flags().StringVar(&care.LVS.HealthSchem, "health-schem", "https", "health check schem")
+	careCmd.Flags().Int32Var(&care.LVS.Interval, "interval", 5, "health check interval, unit is sec.")
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// careCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
