@@ -4,28 +4,26 @@ import (
 	"github.com/wonderivan/logger"
 	"time"
 
-	"github.com/fanux/lvscare/create"
 	"github.com/fanux/lvscare/service"
 )
 
 //VsAndRsCare is
-func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) {
+func VsAndRsCare() {
 	lvs := service.BuildLvscare()
 	logger.Debug("VsAndRsCare DeleteVirtualServer")
-	err := lvs.DeleteVirtualServer(vs, false)
-	print(err)
-	t := time.NewTicker(time.Duration(beat) * time.Second)
+	err := lvs.DeleteVirtualServer(VirtualServer, false)
+	logger.Warn("VsAndRsCare DeleteVirtualServer:", err)
+	if RunOnce {
+		createVsAndRs(VirtualServer, RealServer, lvs)
+		return
+	}
+	t := time.NewTicker(time.Duration(Interval) * time.Second)
 	for {
 		select {
 		case <-t.C:
-			//check virturl server
-			isAvailable := lvs.IsVirtualServerAvailable(vs)
-			if !isAvailable {
-				create.VsAndRsCreate(vs, rs, lvs)
-			}
+			createVsAndRs(VirtualServer, RealServer, lvs)
 			//check real server
-			lvs.CheckRealServers(path, schem)
+			lvs.CheckRealServers(HealthPath, HealthSchem)
 		}
 	}
-
 }

@@ -104,7 +104,7 @@ func (l *lvscare) CreateRealServer(rs string, config bool) error {
 func (l *lvscare) IsVirtualServerAvailable(vs string) bool {
 	virArray, err := l.handle.GetVirtualServers()
 	if err != nil {
-		logger.Error("IsVirtualServerAvailable error: vir servers is empty; ", err)
+		logger.Warn("IsVirtualServerAvailable warn: vir servers is empty; ", err)
 		return false
 	}
 	if l.vs != nil {
@@ -116,7 +116,7 @@ func (l *lvscare) IsVirtualServerAvailable(vs string) bool {
 			}
 		}
 	} else {
-		logger.Error("IsVirtualServerAvailable error: virtual server is empty.")
+		logger.Warn("IsVirtualServerAvailable warn: virtual server is empty.")
 	}
 	return false
 }
