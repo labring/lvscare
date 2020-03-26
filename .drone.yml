@@ -2,7 +2,7 @@ kind: pipeline
 name: default
 workspace:
     base: /go
-    path: src/github.com/fanux/LVScare
+    path: src/github.com/fanux/lvscare
 
 # go mod vender
 #environment:
@@ -34,6 +34,6 @@ steps:
     title: ${DRONE_TAG}
     note: Note.md
   when:
-    event: 
+    event:
     - tag
 
