@@ -8,7 +8,7 @@ If ipvs real server is unavilible, remove it, if real server return to normal, a
 
 ## Quick Start
 ```
-lvscare create --vs 10.103.97.12:6443 --rs 192.168.0.2:6443 --rs 192.168.0.3:6443 --rs 192.168.0.4:6443 
+lvscare care --vs 10.103.97.12:6443 --rs 192.168.0.2:6443 --rs 192.168.0.3:6443 --rs 192.168.0.4:6443  --run-once
 ```
 Then kubeadm join can use `10.103.97.12:6443` instead real masters.
 
