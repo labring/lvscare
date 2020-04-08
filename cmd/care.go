@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"github.com/fanux/lvscare/care"
+	"github.com/fanux/lvscare/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -40,6 +41,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
+	utils.Config("")
 	// careCmd.PersistentFlags().String("foo", "", "A help for foo")
 	careCmd.Flags().BoolVar(&care.LVS.RunOnce, "run-once", false, "is run once mode")
 	careCmd.Flags().StringVar(&care.LVS.VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
