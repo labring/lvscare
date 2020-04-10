@@ -28,7 +28,7 @@ func (care *LvsCare) createVsAndRs() {
 		}
 	}
 	if len(errs) != 0 {
-		logger.Debug("createVsAndRs error:", errs)
+		logger.Error("createVsAndRs error:", errs)
 	}
 
 }
