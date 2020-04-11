@@ -25,7 +25,7 @@ func (care *LvsCare) VsAndRsCare() {
 	for {
 		select {
 		case <-t.C:
-			care.createVsAndRs()
+			//care.createVsAndRs()
 			//check real server
 			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
 		}
