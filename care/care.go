@@ -21,11 +21,11 @@ func (care *LvsCare) VsAndRsCare() {
 		care.createVsAndRs()
 		return
 	}
+	care.createVsAndRs()
 	t := time.NewTicker(time.Duration(care.Interval) * time.Second)
 	for {
 		select {
 		case <-t.C:
-			//care.createVsAndRs()
 			//check real server
 			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
 		}
