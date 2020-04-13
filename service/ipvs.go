@@ -7,8 +7,8 @@ import (
 
 	"fmt"
 
-	"github.com/vishvananda/netlink/nl"
-	"github.com/vishvananda/netns"
+	"github.com/fanux/lvscare/pkg/vishvananda/netlink/nl"
+	"github.com/fanux/lvscare/pkg/vishvananda/netns"
 )
 
 const (
