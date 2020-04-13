@@ -13,7 +13,6 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink/nl"
 	"github.com/vishvananda/netns"
 )
@@ -60,12 +59,12 @@ func setup() {
 	ipvsOnce.Do(func() {
 		var err error
 		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
-			logrus.Warnf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+			fmt.Printf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
 		}
 
 		ipvsFamily, err = getIPVSFamily()
 		if err != nil {
-			logrus.Error("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
+			fmt.Printf("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
 		}
 	})
 }
