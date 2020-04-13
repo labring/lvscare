@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/fanux/LVScare/utils"
+	"github.com/fanux/lvscare/utils"
 	"github.com/vishvananda/netlink"
 	"github.com/vishvananda/netlink/nl"
 )
