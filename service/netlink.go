@@ -264,7 +264,8 @@ func parseIP(ip []byte, family uint16) (net.IP, error) {
 	case syscall.AF_INET6:
 		resIP = (net.IP)(ip[:16])
 	default:
-		return nil, fmt.Errorf("parseIP Error ip=%v", ip)
+		resIP = (net.IP)(ip[:4])
+		//return nil, fmt.Errorf("parseIP Error ip=%v", ip)
 
 	}
 	return resIP, nil
