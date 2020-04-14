@@ -66,7 +66,7 @@ func setup() error{
 			return fmt.Errorf("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
 		}
 		if out,err := exec.Command("lsmod","|","grep","ip_vs").CombinedOutput();err != nil || len(out) == 0  {
-			return fmt.Errorf("wait for ip_vs load...")
+			return fmt.Errorf("wait for ip_vs load... %s %s",err,string(out))
 		}
 		return nil
 }
