@@ -139,7 +139,7 @@ func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint, weight int) {
 
 	dstArray, err := l.handle.GetDestinations(l.service)
 	if err != nil {
-		fmt.Printf("get real servers failed %s : %s\n", ip, port)
+		fmt.Printf("get real servers failed %s:%s %s\n", ip, port, err)
 		return nil, 0
 	}
 
