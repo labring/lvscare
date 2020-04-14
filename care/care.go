@@ -32,6 +32,10 @@ func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) 
 					fmt.Printf("new lvs failed %s\n",err)
 					return err
 				}
+				err = lvs.CreateVirtualServer()
+				if err != nil {
+					fmt.Println("create vs failed", err)
+				}
 			}
 
 			//check real server
