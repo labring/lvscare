@@ -1,9 +1,12 @@
+// +build linux
 package service
 
 import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"github.com/fanux/lvscare/pkg/netns"
+	"github.com/fanux/lvscare/pkg/nl"
 	"net"
 	"os/exec"
 	"strings"
@@ -12,10 +15,6 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
-
-	"github.com/sirupsen/logrus"
-	"github.com/vishvananda/netlink/nl"
-	"github.com/vishvananda/netns"
 )
 
 // For Quick Reference IPVS related netlink message is described at the end of this file.
@@ -60,12 +59,12 @@ func setup() {
 	ipvsOnce.Do(func() {
 		var err error
 		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
-			logrus.Warnf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+			fmt.Printf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
 		}
 
 		ipvsFamily, err = getIPVSFamily()
 		if err != nil {
-			logrus.Error("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
+			fmt.Printf("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
 		}
 	})
 }
@@ -313,6 +312,7 @@ func assembleStats(msg []byte) (SvcStats, error) {
 func assembleService(attrs []syscall.NetlinkRouteAttr) (*Service, error) {
 
 	var s Service
+	var addressBytes []byte
 
 	for _, attr := range attrs {
 
@@ -325,11 +325,7 @@ func assembleService(attrs []syscall.NetlinkRouteAttr) (*Service, error) {
 		case ipvsSvcAttrProtocol:
 			s.Protocol = native.Uint16(attr.Value)
 		case ipvsSvcAttrAddress:
-			ip, err := parseIP(attr.Value, s.AddressFamily)
-			if err != nil {
-				return nil, err
-			}
-			s.Address = ip
+			addressBytes = attr.Value
 		case ipvsSvcAttrPort:
 			s.Port = binary.BigEndian.Uint16(attr.Value)
 		case ipvsSvcAttrFWMark:
@@ -351,6 +347,16 @@ func assembleService(attrs []syscall.NetlinkRouteAttr) (*Service, error) {
 		}
 
 	}
+
+	// parse Address after parse AddressFamily incase of parseIP error
+	if addressBytes != nil {
+		ip, err := parseIP(addressBytes, s.AddressFamily)
+		if err != nil {
+			return nil, err
+		}
+		s.Address = ip
+	}
+
 	return &s, nil
 }
 
@@ -414,18 +420,18 @@ func (i *Handle) doCmdWithoutAttr(cmd uint8) ([][]byte, error) {
 func assembleDestination(attrs []syscall.NetlinkRouteAttr) (*Destination, error) {
 
 	var d Destination
+	var addressBytes []byte
 
 	for _, attr := range attrs {
 
 		attrType := int(attr.Attr.Type)
 
 		switch attrType {
+
+		case ipvsDestAttrAddressFamily:
+			d.AddressFamily = native.Uint16(attr.Value)
 		case ipvsDestAttrAddress:
-			ip, err := parseIP(attr.Value, syscall.AF_INET)
-			if err != nil {
-				return nil, err
-			}
-			d.Address = ip
+			addressBytes = attr.Value
 		case ipvsDestAttrPort:
 			d.Port = binary.BigEndian.Uint16(attr.Value)
 		case ipvsDestAttrForwardingMethod:
@@ -436,8 +442,6 @@ func assembleDestination(attrs []syscall.NetlinkRouteAttr) (*Destination, error)
 			d.UpperThreshold = native.Uint32(attr.Value)
 		case ipvsDestAttrLowerThreshold:
 			d.LowerThreshold = native.Uint32(attr.Value)
-		case ipvsDestAttrAddressFamily:
-			d.AddressFamily = native.Uint16(attr.Value)
 		case ipvsDestAttrActiveConnections:
 			d.ActiveConnections = int(native.Uint16(attr.Value))
 		case ipvsDestAttrInactiveConnections:
@@ -450,6 +454,16 @@ func assembleDestination(attrs []syscall.NetlinkRouteAttr) (*Destination, error)
 			d.Stats = DstStats(stats)
 		}
 	}
+
+	// parse Address after parse AddressFamily incase of parseIP error
+	if addressBytes != nil {
+		ip, err := parseIP(addressBytes, d.AddressFamily)
+		if err != nil {
+			return nil, err
+		}
+		d.Address = ip
+	}
+
 	return &d, nil
 }
 
@@ -561,7 +575,6 @@ func (i *Handle) doSetConfigCmd(c *Config) error {
 /* EACH NETLINK MSG is of the below format, this is what we will receive from execute() api.
    If we have multiple netlink objects to process like GetServices() etc., execute() will
    supply an array of this below object
-
             NETLINK MSG
 |-----------------------------------|
     0        1        2        3
@@ -576,13 +589,10 @@ func (i *Handle) doSetConfigCmd(c *Config) error {
 |        PADDED BY 4 BYTES          | |
 |                                   | |
 |-----------------------------------| -
-
-
  Once We strip genlMsgHdr from above NETLINK MSG, we should parse the VALUE.
  VALUE will have an array of netlink attributes (syscall.NetlinkRouteAttr) such that each attribute will
  represent a "Service" or "Destination" object's field.  If we assemble these attributes we can construct
  Service or Destination.
-
             IPVS MSG
 |-----------------------------------|
      0        1        2        3
@@ -615,5 +625,4 @@ func (i *Handle) doSetConfigCmd(c *Config) error {
 |                                   |
 |                                   |
 |-----------------------------------|
-
 */

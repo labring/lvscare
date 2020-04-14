@@ -7,8 +7,7 @@ import (
 	"syscall"
 
 	"github.com/fanux/lvscare/utils"
-	"github.com/vishvananda/netlink"
-	"github.com/vishvananda/netlink/nl"
+	"github.com/fanux/lvscare/pkg/nl"
 )
 
 //EndPoint  is
@@ -19,7 +18,7 @@ type EndPoint struct {
 
 //Lvser is
 type Lvser interface {
-	CreateInterface(name string, CIRD string) error
+	//CreateInterface(name string, CIRD string) error
 	CreateVirtualServer() error
 	AddRealServer(ip, port string) error
 	GetVirtualServer() (vs *EndPoint, rs *[]EndPoint)
@@ -38,6 +37,7 @@ type lvscare struct {
 	handle       *Handle
 }
 
+/*
 func (l *lvscare) CreateInterface(name string, CIRD string) error {
 	interfa := &netlink.Dummy{LinkAttrs: netlink.LinkAttrs{Name: name}}
 	err := netlink.LinkAdd(interfa)
@@ -62,6 +62,7 @@ func (l *lvscare) CreateInterface(name string, CIRD string) error {
 
 	return err
 }
+ */
 
 func (l *lvscare) CreateVirtualServer() error {
 	err := l.handle.NewService(l.service)
