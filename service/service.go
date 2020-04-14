@@ -105,9 +105,12 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs *[]EndPoint) {
 		fmt.Println("services is nil", err)
 		return nil, nil
 	}
+	if len(svcArray) == 0 {
+		fmt.Println("services list is empty", err)
+		return nil,nil
+	}
 
 	for _, svc := range svcArray {
-		fmt.Printf("check svc ip: %s, port %v\n", svc.Address.String(), svc.Port)
 		if svc.Address.String() == l.service.Address.String() && svc.Port == l.service.Port {
 			return &l.vs, &l.rs
 		}
