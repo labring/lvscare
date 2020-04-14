@@ -84,7 +84,10 @@ type Handle struct {
 // passed path. It will return a valid handle or an error in case an
 // error occurred while creating the handle.
 func New(path string) (*Handle, error) {
-	setup()
+	err := setup()
+	if err != nil {
+		return nil,fmt.Errorf("setup handle failed : %s", err)
+	}
 
 	n := netns.None()
 	if path != "" {

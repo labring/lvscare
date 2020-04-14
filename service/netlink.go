@@ -55,18 +55,17 @@ func (f *ipvsFlags) Len() int {
 	return int(unsafe.Sizeof(*f))
 }
 
-func setup() {
-	ipvsOnce.Do(func() {
+func setup() error{
 		var err error
 		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
-			fmt.Printf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+			return fmt.Errorf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
 		}
 
 		ipvsFamily, err = getIPVSFamily()
 		if err != nil {
-			fmt.Printf("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
+			return fmt.Errorf("Could not get ipvs family information from the kernel. It is possible that ipvs is not enabled in your kernel. Native loadbalancing will not work until this is fixed.")
 		}
-	})
+		return nil
 }
 
 func fillService(s *Service) nl.NetlinkRequestData {
