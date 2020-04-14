@@ -58,7 +58,8 @@ func (f *ipvsFlags) Len() int {
 func setup() error{
 		var err error
 		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
-			return fmt.Errorf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+			fmt.Printf("Running modprobe ip_vs failed with message: `%s`, error: %v\n", strings.TrimSpace(string(out)), err)
+			return nil
 		}
 
 		ipvsFamily, err = getIPVSFamily()
