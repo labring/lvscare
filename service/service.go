@@ -184,6 +184,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 			}
 		} else {
 			rs, weight := l.GetRealServer(realServer.IP, realServer.Port)
+			/*
 			if weight == 0 {
 				err := l.RemoveRealServer(realServer.IP, realServer.Port)
 				fmt.Println("remove weight = 0 real server")
@@ -191,6 +192,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 					fmt.Println("	Error remove weight = 0 real server failed", realServer.IP, realServer.Port)
 				}
 			}
+			 */
 			if rs == nil || weight == 0 {
 				//add it back
 				err := l.AddRealServer(realServer.IP, realServer.Port)

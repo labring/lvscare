@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fanux/lvscare/create"
 	"github.com/fanux/lvscare/service"
 )
 
@@ -12,6 +11,7 @@ import (
 func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) error {
 	var lvs service.Lvser
 	var err error
+	fmt.Println("start lvscare...")
 
 	t := time.NewTicker(time.Duration(beat) * time.Second)
 	for {
@@ -31,10 +31,6 @@ func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) 
 				if err != nil {
 					fmt.Printf("new lvs failed %s\n",err)
 					return err
-				}
-				err = create.VsAndRsCreate(vs, rs)
-				if err != nil {
-					fmt.Printf("create vs and rs failed %s\n",err)
 				}
 			}
 
