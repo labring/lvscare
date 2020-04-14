@@ -11,22 +11,21 @@ import (
 func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) error {
 	var lvs service.Lvser
 	var err error
-	fmt.Println("start lvscare.....")
+	fmt.Println("start lvscare.")
+	lvs, err = service.BuildLvscare(vs, rs)
+	if err != nil {
+		fmt.Printf("new lvs failed %s\n",err)
+		return err
+	}
 
 	t := time.NewTicker(time.Duration(beat) * time.Second)
 	for {
 		select {
 		case <-t.C:
-			if lvs == nil {
-				lvs, err = service.BuildLvscare(vs, rs)
-				if err != nil {
-					fmt.Printf("new lvs failed %s\n",err)
-					return err
-				}
-			}
 			//check virturl server
 			virs, _:= lvs.GetVirtualServer()
 			if virs == nil {
+				lvs.Close()
 				lvs, err = service.BuildLvscare(vs, rs)
 				if err != nil {
 					fmt.Printf("new lvs failed %s\n",err)

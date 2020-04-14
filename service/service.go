@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/fanux/lvscare/utils"
 	"github.com/fanux/lvscare/pkg/nl"
+	"github.com/fanux/lvscare/utils"
 )
 
 //EndPoint  is
@@ -27,6 +27,7 @@ type Lvser interface {
 	RemoveRealServer(ip, port string) error
 
 	CheckRealServers(path, schem string)
+	Close()
 }
 
 type lvscare struct {
@@ -35,6 +36,10 @@ type lvscare struct {
 	service      *Service
 	destinations []*Destination
 	handle       *Handle
+}
+
+func (l *lvscare) Close() {
+	l.handle.Close()
 }
 
 /*
@@ -62,7 +67,7 @@ func (l *lvscare) CreateInterface(name string, CIRD string) error {
 
 	return err
 }
- */
+*/
 
 func (l *lvscare) CreateVirtualServer() error {
 	err := l.handle.NewService(l.service)
@@ -107,7 +112,7 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs *[]EndPoint) {
 	}
 	if len(svcArray) == 0 {
 		fmt.Println("services list is empty", err)
-		return nil,nil
+		return nil, nil
 	}
 
 	for _, svc := range svcArray {
@@ -139,7 +144,6 @@ func (l *lvscare) GetRealServer(ip, port string) (rs *EndPoint, weight int) {
 	}
 
 	for _, dst := range dstArray {
-		fmt.Printf("check realserver ip: %s, port %s\n", dst.Address.String(), dst.Port)
 		if dst.Address.Equal(dip) && dst.Port == dport {
 			return &EndPoint{IP: ip, Port: port}, dst.Weight
 		}
@@ -182,23 +186,21 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 			if err != nil {
 				fmt.Printf("remove real server failed %s:%s", realServer.IP, realServer.Port)
 			}
-		} else {
-			rs, weight := l.GetRealServer(realServer.IP, realServer.Port)
-			/*
-			if weight == 0 {
-				err := l.RemoveRealServer(realServer.IP, realServer.Port)
-				fmt.Println("remove weight = 0 real server")
-				if err != nil {
-					fmt.Println("	Error remove weight = 0 real server failed", realServer.IP, realServer.Port)
-				}
+			continue
+		}
+		rs, weight := l.GetRealServer(realServer.IP, realServer.Port)
+		if weight == 0 {
+			err := l.RemoveRealServer(realServer.IP, realServer.Port)
+			fmt.Println("remove weight = 0 real server")
+			if err != nil {
+				fmt.Println("	Error remove weight = 0 real server failed", realServer.IP, realServer.Port)
 			}
-			 */
-			if rs == nil || weight == 0 {
-				//add it back
-				err := l.AddRealServer(realServer.IP, realServer.Port)
-				if err != nil {
-					fmt.Printf("add real server failed %s:%s", realServer.IP, realServer.Port)
-				}
+		}
+		if rs == nil || weight == 0 {
+			//add it back
+			err := l.AddRealServer(realServer.IP, realServer.Port)
+			if err != nil {
+				fmt.Printf("add real server failed %s:%s", realServer.IP, realServer.Port)
 			}
 		}
 	}
