@@ -111,6 +111,7 @@ func fillDestination(d *Destination) nl.NetlinkRequestData {
 	nl.NewRtAttrChild(cmdAttr, ipvsDestAttrWeight, nl.Uint32Attr(uint32(d.Weight)))
 	nl.NewRtAttrChild(cmdAttr, ipvsDestAttrUpperThreshold, nl.Uint32Attr(d.UpperThreshold))
 	nl.NewRtAttrChild(cmdAttr, ipvsDestAttrLowerThreshold, nl.Uint32Attr(d.LowerThreshold))
+	nl.NewRtAttrChild(cmdAttr, ipvsDestAttrAddressFamily, nl.Uint16Attr(d.AddressFamily))
 
 	return cmdAttr
 }

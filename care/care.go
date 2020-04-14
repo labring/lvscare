@@ -11,7 +11,7 @@ import (
 func VsAndRsCare(vs string, rs []string, beat int64, path string, schem string) error {
 	var lvs service.Lvser
 	var err error
-	fmt.Println("start lvscare.")
+	fmt.Println("start lvscare.i")
 	lvs, err = service.BuildLvscare(vs, rs)
 	if err != nil {
 		fmt.Printf("new lvs failed %s\n",err)
