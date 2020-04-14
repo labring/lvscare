@@ -70,6 +70,7 @@ func (l *lvscare) CreateInterface(name string, CIRD string) error {
 */
 
 func (l *lvscare) CreateVirtualServer() error {
+	fmt.Println("create virual server")
 	err := l.handle.NewService(l.service)
 	if err != nil {
 		return fmt.Errorf("New ipvs failed: %s", err)
@@ -111,7 +112,7 @@ func (l *lvscare) GetVirtualServer() (vs *EndPoint, rs *[]EndPoint) {
 		return nil, nil
 	}
 	if len(svcArray) == 0 {
-		fmt.Println("services list is empty", err)
+		fmt.Println("services list is empty")
 		return nil, nil
 	}
 
