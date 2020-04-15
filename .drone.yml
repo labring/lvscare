@@ -5,20 +5,20 @@ workspace:
     path: src/github.com/fanux/lvscare
 
 # go mod vender
-#environment: 
+#environment:
 #    GO111MODULE: on
 
 steps:
 - name: build
   image: golang:1.13.5
   commands:
-      - go build -mod vendor -o lvscare
+      - sh ./build.sh ${DRONE_TAG=v1.0.0}
 
 - name: publish-hub
   image: plugins/docker
   settings:
     repo: fanux/lvscare
-    tags: ${DRONE_TAG=latest}
+    tags: ${DRONE_TAG=v1.0.0}
     username:
       from_secret: docker-hub-user
     dockerfile: Dockerfile
@@ -28,7 +28,7 @@ steps:
 - name: publish
   image: plugins/github-release
   settings:
-    api_key: 
+    api_key:
         from_secret: git-release-token
     files: lvscare
     title: ${DRONE_TAG}
