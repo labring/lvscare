@@ -27,7 +27,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v1
         with:
           version: latest
-          args: release --rm-dist --timeout=1h
+          args: release --snapshot  --rm-dist --timeout=1h
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           VERSION: latest
