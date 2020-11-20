@@ -1,11 +1,10 @@
-name: Release
+name: Go
 
 on:
   push:
-    branches-ignore:
-      - '**'
-    tags:
-      - '*'
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   goreleaser:
@@ -31,7 +30,7 @@ jobs:
           args: release --rm-dist --timeout=1h
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          VERSION: ${{ steps.prepare.outputs.tag_name }}
+          VERSION: latest
 
       - name: set up buildx
         id: buildx
@@ -49,8 +48,8 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            --build-arg VERSION=${{ steps.prepare.outputs.tag_name }} \
+            --build-arg VERSION=latest \
             --push \
-            -t ${DOCKER_REPO:-fanux/lvscare}:${{ steps.prepare.outputs.tag_name }} \
+            -t ${DOCKER_REPO:-fanux/lvscare}:latest \
             -f Dockerfile.hub \
             .
