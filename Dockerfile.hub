@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.0-experimental
-FROM centos:7 
+FROM alpine:latest
 MAINTAINER "louisehong <louisehong4168@gmail.com>"
-RUN yum install -y ipvsadm
 
 ENTRYPOINT ["/opt/lvscare"]
 
