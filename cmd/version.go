@@ -27,7 +27,7 @@ var versionCmd = &cobra.Command{
 	Short: "A lightweight LVS baby care, support ipvs health check.",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("version called")
+		VersionStr()
 	},
 }
 
