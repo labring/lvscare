@@ -26,7 +26,7 @@ import (
 	"sync"
 	"syscall"
 
-	libipvs "github.com/docker/libnetwork/ipvs"
+	libipvs "github.com/moby/ipvs"
 	"github.com/fanux/lvscare/internal/klog"
 )
 
