@@ -16,7 +16,7 @@ func (care *LvsCare) VsAndRsCare() {
 		logger.Debug("VsAndRsCare DeleteVirtualServer")
 		err := lvs.DeleteVirtualServer(care.VirtualServer, false)
 		if err != nil {
-			logger.Warn("VsAndRsCare DeleteVirtualServer:", err)
+			logger.Info("VirtualServer is not exist skip...:", err)
 		}
 	}
 	care.createVsAndRs()
