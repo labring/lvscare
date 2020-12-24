@@ -8,8 +8,9 @@ type LvsCare struct {
 	VirtualServer string
 	RealServer    []string
 	RunOnce       bool
-	Delete        *bool
+	Clean         bool
 	Interval      int32
+	Logger        string
 	//
 	lvs service.Lvser
 }

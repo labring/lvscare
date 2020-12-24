@@ -31,6 +31,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		utils.Config(care.LVS.Logger)
 		care.LVS.VsAndRsCare()
 	},
 }
@@ -41,11 +42,12 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	utils.Config("")
 	// careCmd.PersistentFlags().String("foo", "", "A help for foo")
 	careCmd.Flags().BoolVar(&care.LVS.RunOnce, "run-once", false, "is run once mode")
 	careCmd.Flags().StringVar(&care.LVS.VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
 	careCmd.Flags().StringSliceVar(&care.LVS.RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
+	careCmd.Flags().StringVar(&care.LVS.Logger, "logger", "INFO", "logger level")
+	careCmd.Flags().BoolVar(&care.LVS.Clean, "clean", false, "before run clean ipvs rules")
 
 	careCmd.Flags().StringVar(&care.LVS.HealthPath, "health-path", "/healthz", "health check path")
 	careCmd.Flags().StringVar(&care.LVS.HealthSchem, "health-schem", "https", "health check schem")
