@@ -7,7 +7,7 @@ require (
 	github.com/moby/ipvs v1.0.1
 	github.com/spf13/cobra v0.0.6
 	github.com/stretchr/testify v1.3.0 // indirect
-	github.com/wonderivan/logger v1.0.0 // indirect
+	github.com/wonderivan/logger v1.0.0
 )
 
 replace (

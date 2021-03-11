@@ -29,5 +29,4 @@ func Config(level string) {
 	}
 	cfg := fmt.Sprintf(logConfig, level)
 	logger.SetLogger(string(cfg))
-	logger.SetLogPath(true)
 }
