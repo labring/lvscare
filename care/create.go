@@ -1,7 +1,7 @@
 package care
 
 import (
-	"github.com/fanux/lvscare/service"
+	"github.com/sealyun/lvscare/service"
 	"github.com/wonderivan/logger"
 )
 

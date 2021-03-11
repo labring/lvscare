@@ -15,8 +15,8 @@
 package cmd
 
 import (
-	"github.com/fanux/lvscare/care"
-	"github.com/fanux/lvscare/utils"
+	"github.com/sealyun/lvscare/care"
+	"github.com/sealyun/lvscare/utils"
 	"github.com/spf13/cobra"
 )
 

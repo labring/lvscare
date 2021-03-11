@@ -4,7 +4,7 @@ import (
 	"github.com/wonderivan/logger"
 	"time"
 
-	"github.com/fanux/lvscare/service"
+	"github.com/sealyun/lvscare/service"
 )
 
 //VsAndRsCare is

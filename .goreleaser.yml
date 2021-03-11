@@ -13,7 +13,7 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X github.com/fanux/lvscare/cmd.Version={{.Version}} -X github.com/fanux/lvscare/cmd.Githash={{.ShortCommit}} -X github.com/fanux/lvscare/cmd.Buildstamp={{.Date}} -X github.com/fanux/lvscare/cmd.Author=goreleaser
+      - -s -w -X github.com/sealyun/lvscare/cmd.Version={{.Version}} -X github.com/sealyun/lvscare/cmd.Githash={{.ShortCommit}} -X github.com/sealyun/lvscare/cmd.Buildstamp={{.Date}} -X github.com/sealyun/lvscare/cmd.Author=goreleaser
 #archives:
 #  - replacements:
 #      darwin: darwin

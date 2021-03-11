@@ -44,7 +44,7 @@ var (
 
 func VersionStr() {
 	fmt.Printf(`A lightweight LVS baby care, support ipvs health check
-run "lvscare -h" get more help, more see https://github.com/fanux/lvscare
+run "lvscare -h" get more help, more see https://github.com/sealyun/lvscare
 `)
 	fmt.Printf("lvscare version :    %s\n", Version)
 	fmt.Printf("Git Commit Hash:     %s\n", Githash)

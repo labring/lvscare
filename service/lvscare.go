@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/fanux/lvscare/internal/ipvs"
+	"github.com/sealyun/lvscare/internal/ipvs"
 )
 
 //BuildLvscare is

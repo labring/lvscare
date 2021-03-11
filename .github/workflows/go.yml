@@ -50,6 +50,6 @@ jobs:
 #            --platform linux/amd64,linux/arm64 \
 #            --build-arg VERSION=latest \
 #            --push \
-#            -t ${DOCKER_REPO:-fanux/lvscare}:latest \
+#            -t ${DOCKER_REPO:-sealyun/lvscare}:latest \
 #            -f Dockerfile.hub \
 #            .

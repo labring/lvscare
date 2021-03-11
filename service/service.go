@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/fanux/lvscare/internal/ipvs"
-	"github.com/fanux/lvscare/utils"
+	"github.com/sealyun/lvscare/internal/ipvs"
+	"github.com/sealyun/lvscare/utils"
 	"github.com/wonderivan/logger"
 	"net"
 	"strconv"

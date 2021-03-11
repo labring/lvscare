@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/fanux/lvscare/internal/ipvs"
+	"github.com/sealyun/lvscare/internal/ipvs"
 	"github.com/wonderivan/logger"
 	"net"
 	"net/http"

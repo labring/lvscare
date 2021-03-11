@@ -51,6 +51,6 @@ jobs:
             --platform linux/amd64,linux/arm64 \
             --build-arg VERSION=${{ steps.prepare.outputs.tag_name }} \
             --push \
-            -t ${DOCKER_REPO:-fanux/lvscare}:${{ steps.prepare.outputs.tag_name }} \
+            -t ${DOCKER_REPO:-sealyun/lvscare}:${{ steps.prepare.outputs.tag_name }} \
             -f Dockerfile.hub \
             .

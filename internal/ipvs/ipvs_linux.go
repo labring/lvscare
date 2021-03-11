@@ -27,7 +27,7 @@ import (
 	"syscall"
 
 	libipvs "github.com/moby/ipvs"
-	"github.com/fanux/lvscare/internal/klog"
+	"github.com/sealyun/lvscare/internal/klog"
 )
 
 // runner implements ipvs.Interface.
