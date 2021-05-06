@@ -1,5 +1,4 @@
-[![Build Status](https://cloud.drone.io/api/badges/sealyun/lvscare/status.svg)](https://cloud.drone.io/sealyun/lvscare)
-
+[![Build Status](https://github.com/sealyun/lvscare/actions/workflows/go.yml/badge.svg)](https://github.com/sealyun/lvscare/actions)
 # LVScare
 A lightweight LVS baby care, support ipvs health check
 
