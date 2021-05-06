@@ -1,4 +1,5 @@
-[![Build Status](https://github.com/sealyun/lvscare/actions/workflows/go.yml/badge.svg)](https://github.com/sealyun/lvscare/actions)
+[![Build Status](https://github.com/sealyun/lvscare/actions/workflows/go.yml/badge.svg)](https://github.com/sealyun/lvscare/actions/workflows/go.yml)
+[![Release](https://github.com/sealyun/lvscare/actions/workflows/release.yml/badge.svg)](https://github.com/sealyun/lvscare/actions/workflows/release.yml)
 # LVScare
 A lightweight LVS baby care, support ipvs health check
 
