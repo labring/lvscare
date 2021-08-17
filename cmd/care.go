@@ -45,7 +45,7 @@ func init() {
 	// careCmd.PersistentFlags().String("foo", "", "A help for foo")
 	careCmd.Flags().BoolVar(&care.LVS.RunOnce, "run-once", false, "is run once mode")
 	careCmd.Flags().StringVar(&care.LVS.VirtualServer, "vs", "", "virturl server like 10.54.0.2:6443")
-	careCmd.Flags().StringSliceVar(&care.LVS.RealServer, "rs", []string{}, "virturl server like 192.168.0.2:6443")
+	careCmd.Flags().StringSliceVar(&care.LVS.RealServer, "rs", []string{}, "real server like 192.168.0.2:6443")
 	careCmd.Flags().StringVar(&care.LVS.Logger, "logger", "INFO", "logger level")
 	careCmd.Flags().BoolVar(&care.LVS.Clean, "clean", false, "before run clean ipvs rules")
 
