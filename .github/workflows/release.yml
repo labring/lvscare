@@ -31,6 +31,7 @@ jobs:
           args: release --rm-dist --timeout=1h
         env:
           VERSION: ${{ steps.prepare.outputs.tag_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: set up buildx
         id: buildx
