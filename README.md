@@ -3,6 +3,9 @@
 # LVScare
 A lightweight LVS baby care, support ipvs health check
 
+> v1.1.2-alpha.2 is image to hub.docker
+> v1.1.3-beta.1 is image to github docker
+
 ## Feature
 If ipvs real server is unavilible, remove it, if real server return to normal, add it back.  This is useful for kubernetes master HA.
 
