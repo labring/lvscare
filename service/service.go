@@ -72,8 +72,8 @@ func (l *lvscare) DeleteVirtualServer(vs string, config bool) error {
 	virServer := utils.BuildVirtualServer(vs)
 	err := l.handle.DeleteVirtualServer(virServer)
 	if err != nil {
-		logger.Warn("DeleteVirtualServer error: ", err)
-		return err
+		logger.Debug("VirtualServer is not exist, skip...", err)
+		return nil
 	}
 	if config {
 		l.vs = nil
