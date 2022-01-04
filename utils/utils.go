@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/sealyun/lvscare/internal/ipvs"
-	"github.com/wonderivan/logger"
+	"github.com/sealyun/lvscare/internal/klog"
 	"net"
 	"net/http"
 	"strconv"
@@ -15,13 +15,13 @@ import (
 func SplitServer(server string) (string, uint16) {
 	s := strings.Split(server, ":")
 	if len(s) != 2 {
-		logger.Warn("SplitServer error: len(s) is not two.")
+		klog.Warning("SplitServer error: len(s) is not two.")
 		return "", 0
 	}
-	logger.Debug("SplitServer debug: IP: %s, Port: %s", s[0], s[1])
+	klog.V(8).Infof("SplitServer debug: IP: %s, Port: %s", s[0], s[1])
 	p, err := strconv.Atoi(s[1])
 	if err != nil {
-		logger.Warn("SplitServer error: ", err)
+		klog.Warningf("SplitServer error: %v", err)
 		return "", 0
 	}
 	return s[0], uint16(p)
@@ -33,7 +33,7 @@ func IsHTTPAPIHealth(ip, port, path, schem string) bool {
 	url := fmt.Sprintf("%s://%s:%s%s", schem, ip, port, path)
 	resp, err := http.Get(url)
 	if err != nil {
-		logger.Debug("IsHTTPAPIHealth error: ", err)
+		klog.V(8).Infof("IsHTTPAPIHealth error: ", err)
 		return false
 	}
 	defer resp.Body.Close()

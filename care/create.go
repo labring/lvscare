@@ -1,8 +1,8 @@
 package care
 
 import (
+	"github.com/sealyun/lvscare/internal/klog"
 	"github.com/sealyun/lvscare/service"
-	"github.com/wonderivan/logger"
 )
 
 //createVsAndRs is
@@ -28,7 +28,6 @@ func (care *LvsCare) createVsAndRs() {
 		}
 	}
 	if len(errs) != 0 {
-		logger.Error("createVsAndRs error:", errs)
+		klog.Errorf("createVsAndRs error: %v", errs)
 	}
-
 }

@@ -419,6 +419,10 @@ func InitFlags(flagset *flag.FlagSet) {
 	flagset.Var(&logging.traceLocation, "log_backtrace_at", "when logging hits line file:N, emit a stack trace")
 }
 
+func InitVerbosity(verbosity int32) {
+	logging.verbosity = Level(verbosity)
+}
+
 // Flush flushes all pending log I/O.
 func Flush() {
 	logging.lockAndFlushAll()
