@@ -1,7 +1,7 @@
 package care
 
 import (
-	"github.com/sealyun/lvscare/internal/klog"
+	"github.com/sealyun/lvscare/internal/glog"
 	"github.com/sealyun/lvscare/service"
 )
 
@@ -28,6 +28,6 @@ func (care *LvsCare) createVsAndRs() {
 		}
 	}
 	if len(errs) != 0 {
-		klog.Errorf("createVsAndRs error: %v", errs)
+		glog.Errorf("createVsAndRs error: %v", errs)
 	}
 }

@@ -1,14 +1,18 @@
 package utils
 
-import "github.com/sealyun/lvscare/internal/klog"
+import (
+	"github.com/sealyun/lvscare/internal/glog"
+)
 
 func Config(level string) {
+	//flag.Parse()
 	switch level {
 	case "INFO":
-		klog.InitVerbosity(0)
+		glog.InitVerbosity(0)
 	case "DEBG":
-		klog.InitVerbosity(9)
+		glog.InitVerbosity(9)
 	default:
-		klog.InitVerbosity(0)
+		glog.InitVerbosity(0)
 	}
+
 }
