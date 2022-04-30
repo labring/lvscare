@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/sealyun/lvscare/utils"
+	"github.com/labring/lvscare/utils"
 	"testing"
 )
 

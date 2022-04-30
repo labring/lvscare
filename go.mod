@@ -1,4 +1,4 @@
-module github.com/sealyun/lvscare
+module github.com/labring/lvscare
 
 go 1.13
 

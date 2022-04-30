@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/sealyun/lvscare/cmd"
+import "github.com/labring/lvscare/cmd"
 
 func main() {
 	cmd.Execute()
