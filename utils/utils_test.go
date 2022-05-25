@@ -27,6 +27,13 @@ func TestSplitServer(t *testing.T) {
 			want:  "1408:4003:10bb:6a01:83b9:6360:c66d:ed3e",
 			want1: 6443,
 		},
+		{
+			args: args{
+				server: "1.1.1.1:6443",
+			},
+			want:  "1.1.1.1",
+			want1: 6443,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
