@@ -19,8 +19,7 @@ type EndPoint struct {
 }
 
 func (ep EndPoint) String() string {
-	port := strconv.Itoa(int(ep.Port))
-	return ep.IP + ":" + port
+	return net.JoinHostPort(ep.IP, strconv.Itoa(int(ep.Port)))
 }
 
 //Lvser is
