@@ -28,6 +28,9 @@ var careCmd = &cobra.Command{
 		utils.Config(care.LVS.Logger)
 		care.LVS.VsAndRsCare()
 	},
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		return care.LVS.SyncRouter()
+	},
 }
 
 func init() {
