@@ -1,6 +1,10 @@
 package care
 
-import "github.com/labring/lvscare/service"
+import (
+	"github.com/labring/lvscare/internal/route"
+	"github.com/labring/lvscare/service"
+	"net"
+)
 
 type LvsCare struct {
 	HealthPath    string
@@ -11,8 +15,10 @@ type LvsCare struct {
 	Clean         bool
 	Interval      int32
 	Logger        string
+	TargetIP      net.IP
 	//
-	lvs service.Lvser
+	lvs   service.Lvser
+	Route *route.Route
 }
 
 var LVS LvsCare
