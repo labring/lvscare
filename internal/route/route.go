@@ -20,7 +20,6 @@ import (
 	"github.com/labring/lvscare/internal/glog"
 	"github.com/labring/lvscare/utils"
 	"github.com/vishvananda/netlink"
-	k8snet "k8s.io/apimachinery/pkg/util/net"
 	"net"
 	"os"
 	"syscall"
@@ -38,17 +37,6 @@ func NewRoute(host, gateway string) *Route {
 		Host:    host,
 		Gateway: gateway,
 	}
-}
-
-func CheckIsDefaultRoute(host string) error {
-	ok, err := isDefaultRouteIP(host)
-	if err == nil && ok {
-		_, err = os.Stdout.WriteString("ok")
-	}
-	if err == nil && !ok {
-		_, err = os.Stderr.WriteString("failed")
-	}
-	return err
 }
 
 func (r *Route) SetRoute() error {
@@ -74,15 +62,6 @@ func (r *Route) DelRoute() error {
 	}
 	glog.Info(fmt.Sprintf("success to del route.(host:%s, gateway:%s)", r.Host, r.Gateway))
 	return nil
-}
-
-// isDefaultRouteIP return true if host equal default route ip host.
-func isDefaultRouteIP(host string) (bool, error) {
-	netIP, err := k8snet.ChooseHostInterface()
-	if err != nil {
-		return false, fmt.Errorf("failed to get default route ip, err: %v", err)
-	}
-	return netIP.String() == host, nil
 }
 
 // addRouteGatewayViaHost host: 10.103.97.2  gateway 192.168.253.129

@@ -140,6 +140,7 @@ func GetLocalDefaultRoute(ip string) (*LocalAddr, error) {
 	}
 	for _, local := range locals {
 		for _, add := range local.Addr {
+			glog.Infof("local net interface: %s, addr: %s", local.Interface.Name, add.String())
 			if isContains, err := Contains(add.String(), ip); err != nil {
 				return nil, err
 			} else {

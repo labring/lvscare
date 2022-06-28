@@ -7,7 +7,6 @@ require (
 	github.com/moby/ipvs v1.0.1
 	github.com/spf13/cobra v1.2.1
 	github.com/vishvananda/netlink v1.1.0
-	k8s.io/apimachinery v0.22.5
 )
 
 replace (

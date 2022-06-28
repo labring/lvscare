@@ -51,39 +51,28 @@ func (care *LvsCare) SyncRouter() error {
 	}
 	if len(LVS.RealServer) > 0 {
 		var ipv4 bool
-		rIP, _, err := net.SplitHostPort(LVS.RealServer[0])
-		if err != nil {
-			return err
-		}
 		vIP, _, err := net.SplitHostPort(LVS.VirtualServer)
 		if err != nil {
 			return err
 		}
-		if utils.IsIpv4(rIP) {
-			ipv4 = true
-		} else {
+		if utils.IsIPv6(LVS.TargetIP) {
 			ipv4 = false
+		} else {
+			ipv4 = true
 		}
 		if !ipv4 {
 			return nil
 		}
-		defaultInterface, err := utils.GetLocalDefaultRoute(rIP)
-		if err != nil {
-			return err
-		}
-		if len(defaultInterface.Addr) > 0 {
-			for _, addr := range defaultInterface.Addr {
-				ip, _, err := net.ParseCIDR(addr.String())
-				if err != nil {
-					return err
-				}
-				if (!utils.IsIPv6(ip) && ipv4) || (utils.IsIPv6(ip) && !ipv4) {
-					LVS.TargetIP = ip
-				}
-			}
-		}
+		glog.Infof("tip: %s,vip: %s", LVS.TargetIP.String(), vIP)
 		LVS.Route = route.NewRoute(vIP, LVS.TargetIP.String())
 		return LVS.Route.SetRoute()
 	}
 	return errors.New("real server can't empty")
+}
+
+func SetTargetIP() error {
+	if LVS.TargetIP == nil {
+		LVS.TargetIP = net.ParseIP(os.Getenv("NODE_IP"))
+	}
+	return nil
 }
