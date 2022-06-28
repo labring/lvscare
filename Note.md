@@ -1,3 +1,3 @@
 # lvscare release note
 
-sealyun.com
+sealos.io
