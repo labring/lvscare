@@ -25,31 +25,17 @@ spec:
       name: kube-sealyun-lvscare
       resources: {}
       env:
-        - name: NODE_IP
+        - name: LVSCARE_NODE_IP
           value: 172.16.81.61
       securityContext:
         privileged: true
       volumeMounts:
-        - mountPath: /root/.kube/config
-          name: kubeconfig
-          readOnly: true
         - mountPath: /lib/modules
           name: lib-modules
           readOnly: true
-        - mountPath: /usr/bin/lvscare-test
-          name: lvscare
-          readOnly: false
   hostNetwork: true
   volumes:
-    - hostPath:
-        path: /etc/kubernetes/kubelet.conf
-        type: ""
-      name: kubeconfig
     - hostPath:
         path: /lib/modules
         type: ""
       name: lib-modules
-    - hostPath:
-        path: /root/lvscare
-        type: ""
-      name: lvscare

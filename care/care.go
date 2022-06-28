@@ -72,7 +72,7 @@ func (care *LvsCare) SyncRouter() error {
 
 func SetTargetIP() error {
 	if LVS.TargetIP == nil {
-		LVS.TargetIP = net.ParseIP(os.Getenv("NODE_IP"))
+		LVS.TargetIP = net.ParseIP(os.Getenv("LVSCARE_NODE_IP"))
 	}
 	return nil
 }
