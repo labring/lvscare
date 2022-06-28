@@ -61,6 +61,7 @@ func (care *LvsCare) SyncRouter() error {
 			ipv4 = true
 		}
 		if !ipv4 {
+			glog.Infof("tip: %s is not ipv4", LVS.TargetIP.String())
 			return nil
 		}
 		glog.Infof("tip: %s,vip: %s", LVS.TargetIP.String(), vIP)
