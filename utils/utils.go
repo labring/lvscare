@@ -31,7 +31,7 @@ func SplitServer(server string) (string, uint16) {
 //IsHTTPAPIHealth is check http error
 func IsHTTPAPIHealth(ip, port, path, schem string) bool {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	url := fmt.Sprintf("%s://%s:%s%s", schem, ip, port, path)
+	url := fmt.Sprintf("%s://%s%s", schem, net.JoinHostPort(ip, port), path)
 	resp, err := http.Get(url)
 	if err != nil {
 		glog.V(8).Infof("IsHTTPAPIHealth error: %v", err)

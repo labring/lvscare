@@ -27,6 +27,17 @@ func (care *LvsCare) VsAndRsCare() {
 	for {
 		select {
 		case <-t.C:
+			// in some cases, virtual server maybe removed
+			isAvailable := care.lvs.IsVirtualServerAvailable(care.VirtualServer)
+			if !isAvailable {
+				err := care.lvs.CreateVirtualServer(care.VirtualServer, true)
+				//virtual server is exists
+				if err != nil {
+					glog.Errorf("failed to create virtual server: %v", err)
+
+					return
+				}
+			}
 			//check real server
 			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
 		}
