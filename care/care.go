@@ -86,8 +86,6 @@ func SetTargetIP() error {
 	if LVS.TargetIP == nil {
 		LVS.TargetIP = net.ParseIP(os.Getenv("LVSCARE_NODE_IP"))
 	}
-	if LVS.TargetIP == nil {
-		return errors.New("target ip can't empty")
-	}
+
 	return nil
 }

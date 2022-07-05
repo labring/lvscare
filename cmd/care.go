@@ -32,6 +32,10 @@ var careCmd = &cobra.Command{
 		if err := care.SetTargetIP(); err != nil {
 			return err
 		}
+		// if target ip is empty, skip sync router
+		if care.LVS.TargetIP == nil {
+			return nil
+		}
 		return care.LVS.SyncRouter()
 	},
 }
