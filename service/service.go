@@ -158,7 +158,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 				//add it back
 				ip := realServer.IP
 				port := strconv.Itoa(int(realServer.Port))
-				err := l.CreateRealServer(ip+":"+port, false)
+				err := l.CreateRealServer(net.JoinHostPort(ip, port), false)
 				if err != nil {
 					glog.Warningf("CheckRealServers error[add real server failed]: %s;  %d; %v ", realServer.IP, realServer.Port, err)
 				}

@@ -36,6 +36,17 @@ func (care *LvsCare) VsAndRsCare() {
 	for {
 		select {
 		case <-t.C:
+			// in some cases, virtual server maybe removed
+			isAvailable := care.lvs.IsVirtualServerAvailable(care.VirtualServer)
+			if !isAvailable {
+				err := care.lvs.CreateVirtualServer(care.VirtualServer, true)
+				//virtual server is exists
+				if err != nil {
+					glog.Errorf("failed to create virtual server: %v", err)
+
+					return
+				}
+			}
 			//check real server
 			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
 		case signa := <-sig:
@@ -75,8 +86,6 @@ func SetTargetIP() error {
 	if LVS.TargetIP == nil {
 		LVS.TargetIP = net.ParseIP(os.Getenv("LVSCARE_NODE_IP"))
 	}
-	if LVS.TargetIP == nil {
-		return errors.New("target ip can't empty")
-	}
+
 	return nil
 }
