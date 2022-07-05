@@ -6,6 +6,7 @@ require (
 	github.com/lithammer/dedent v1.1.0
 	github.com/moby/ipvs v1.0.1
 	github.com/spf13/cobra v1.2.1
+	github.com/vishvananda/netlink v1.1.0
 )
 
 replace (

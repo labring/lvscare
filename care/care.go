@@ -1,7 +1,14 @@
 package care
 
 import (
+	"errors"
 	"github.com/labring/lvscare/internal/glog"
+	"github.com/labring/lvscare/internal/route"
+	"github.com/labring/lvscare/utils"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/labring/lvscare/service"
@@ -24,6 +31,8 @@ func (care *LvsCare) VsAndRsCare() {
 		return
 	}
 	t := time.NewTicker(time.Duration(care.Interval) * time.Second)
+	sig := make(chan os.Signal)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGKILL)
 	for {
 		select {
 		case <-t.C:
@@ -40,6 +49,45 @@ func (care *LvsCare) VsAndRsCare() {
 			}
 			//check real server
 			lvs.CheckRealServers(care.HealthPath, care.HealthSchem)
+		case signa := <-sig:
+			glog.Infof("receive kill signal: %+v", signa)
+			_ = LVS.Route.DelRoute()
+			return
 		}
 	}
+}
+func (care *LvsCare) SyncRouter() error {
+	if len(LVS.VirtualServer) == 0 {
+		return errors.New("virtual server can't empty")
+	}
+	if len(LVS.RealServer) > 0 {
+		var ipv4 bool
+		vIP, _, err := net.SplitHostPort(LVS.VirtualServer)
+		if err != nil {
+			return err
+		}
+		if utils.IsIPv6(LVS.TargetIP) {
+			ipv4 = false
+		} else {
+			ipv4 = true
+		}
+		if !ipv4 {
+			glog.Infof("tip: %s is not ipv4", LVS.TargetIP.String())
+			return nil
+		}
+		glog.Infof("tip: %s,vip: %s", LVS.TargetIP.String(), vIP)
+		LVS.Route = route.NewRoute(vIP, LVS.TargetIP.String())
+		return LVS.Route.SetRoute()
+	}
+	return errors.New("real server can't empty")
+}
+
+func SetTargetIP() error {
+	if LVS.TargetIP == nil {
+		LVS.TargetIP = net.ParseIP(os.Getenv("LVSCARE_NODE_IP"))
+	}
+	if LVS.TargetIP == nil {
+		return errors.New("target ip can't empty")
+	}
+	return nil
 }
