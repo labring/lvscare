@@ -4,12 +4,13 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/labring/lvscare/internal/glog"
-	"github.com/labring/lvscare/internal/ipvs"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/labring/lvscare/internal/glog"
+	"github.com/labring/lvscare/internal/ipvs"
 )
 
 //SplitServer is
@@ -74,32 +75,7 @@ func IsIPv6(netIP net.IP) bool {
 }
 
 func IsIpv4(ip string) bool {
-	//matched, _ := regexp.MatchString("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}", ip)
-
-	arr := strings.Split(ip, ".")
-	if len(arr) != 4 {
-		return false
-	}
-	for _, v := range arr {
-		if v == "" {
-			return false
-		}
-		if len(v) > 1 && v[0] == '0' {
-			return false
-		}
-		num := 0
-		for _, c := range v {
-			if c >= '0' && c <= '9' {
-				num = num*10 + int(c-'0')
-			} else {
-				return false
-			}
-		}
-		if num > 255 {
-			return false
-		}
-	}
-	return true
+	return net.ParseIP(ip) != nil && strings.Contains(ip, ".")
 }
 
 type LocalAddr struct {
