@@ -75,7 +75,8 @@ func IsIPv6(netIP net.IP) bool {
 }
 
 func IsIpv4(ip string) bool {
-	return net.ParseIP(ip) != nil && strings.Contains(ip, ".")
+	netIP := net.ParseIP(ip)
+	return netIP != nil && netIP.To4() != nil
 }
 
 type LocalAddr struct {
