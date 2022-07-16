@@ -4,12 +4,14 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/labring/lvscare/internal/glog"
-	"github.com/labring/lvscare/internal/ipvs"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/labring/lvscare/internal/glog"
+	"github.com/labring/lvscare/internal/ipvs"
+	"github.com/vishvananda/netlink"
 )
 
 //SplitServer is
@@ -107,7 +109,7 @@ type LocalAddr struct {
 	Interface net.Interface
 }
 
-func IsLocalHostAddrs() ([]LocalAddr, error) {
+func ListLocalHostAddrs() ([]LocalAddr, error) {
 	netInterfaces, err := net.Interfaces()
 	if err != nil {
 		return nil, err
@@ -134,7 +136,7 @@ func IsLocalHostAddrs() ([]LocalAddr, error) {
 }
 
 func GetLocalDefaultRoute(ip string) (*LocalAddr, error) {
-	locals, err := IsLocalHostAddrs()
+	locals, err := ListLocalHostAddrs()
 	if err != nil {
 		return nil, err
 	}
@@ -163,4 +165,39 @@ func Contains(sub, s string) (bool, error) {
 		return false, fmt.Errorf("%s is not a valid TargetIP address", s)
 	}
 	return ipNet.Contains(ip), nil
+}
+
+func CreateDummyLinkIfNotExists(name string) (netlink.Link, error) {
+	link, _ := netlink.LinkByName(name)
+	if link != nil {
+		return link, nil
+	}
+	link = &netlink.Dummy{
+		LinkAttrs: netlink.LinkAttrs{
+			Name: name,
+		},
+	}
+	return link, netlink.LinkAdd(link)
+}
+
+func AssignIPToLink(s string, link netlink.Link) error {
+	if strings.Index(s, "/") < 0 {
+		s = s + "/32"
+	}
+	addr, err := netlink.ParseAddr(s)
+	if err != nil {
+		return err
+	}
+	return netlink.AddrAdd(link, addr)
+}
+
+func DeleteLinkByName(name string) error {
+	l, err := netlink.LinkByName(name)
+	if err != nil {
+		if err, ok := err.(netlink.LinkNotFoundError); !ok {
+			return err
+		}
+		return nil
+	}
+	return netlink.LinkDel(l)
 }

@@ -1,13 +1,15 @@
 package care
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/labring/lvscare/internal/glog"
 	"github.com/labring/lvscare/service"
 )
 
-//createVsAndRs is
-func (care *LvsCare) createVsAndRs() {
-	//ip, _ := utils.SplitServer(vs)
+// createVsAndRs is
+func (care *LvsCare) createVsAndRs() error {
 	if care.lvs == nil {
 		care.lvs = service.BuildLvscare()
 	}
@@ -15,9 +17,9 @@ func (care *LvsCare) createVsAndRs() {
 	isAvailable := care.lvs.IsVirtualServerAvailable(care.VirtualServer)
 	if !isAvailable {
 		err := care.lvs.CreateVirtualServer(care.VirtualServer, true)
-		//virtual server is exists
+		// virtual server is exists
 		if err != nil {
-			//can't return
+			// can't return
 			errs = append(errs, err.Error())
 		}
 	}
@@ -29,5 +31,7 @@ func (care *LvsCare) createVsAndRs() {
 	}
 	if len(errs) != 0 {
 		glog.Errorf("createVsAndRs error: %v", errs)
+		return fmt.Errorf(strings.Join(errs, ","))
 	}
+	return nil
 }

@@ -3,10 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/labring/lvscare/internal/glog"
 	"net"
 	"strconv"
 	"syscall"
+
+	"github.com/labring/lvscare/internal/glog"
 
 	"github.com/labring/lvscare/internal/ipvs"
 	"github.com/labring/lvscare/utils"
@@ -143,7 +144,7 @@ func (l *lvscare) CheckRealServers(path, schem string) {
 		if !l.healthCheck(ip, port, path, schem) {
 			err := l.DeleteRealServer(realServer.String(), false)
 			if err != nil {
-				glog.Warningf("CheckRealServers error: %s;  %d; %v ", realServer.IP, realServer.Port, err)
+				glog.Warningf("CheckRealServers error: %s:%d; %v ", realServer.IP, realServer.Port, err)
 			}
 		} else {
 			rs, weight := l.GetRealServer(realServer.String())
