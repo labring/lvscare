@@ -20,7 +20,7 @@ limitations under the License.
 package ipvs
 
 import (
-	utilsexec "github.com/labring/lvscare/internal/exec"
+	utilsexec "github.com/labring/lvscare/pkg/exec"
 )
 
 // RequiredIPVSKernelModulesAvailableCheck tests IPVS required kernel modules.

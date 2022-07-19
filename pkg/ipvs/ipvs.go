@@ -18,11 +18,12 @@ package ipvs
 
 import (
 	"fmt"
-	"github.com/labring/lvscare/internal/exec"
-	"github.com/labring/lvscare/internal/version"
 	"net"
 	"strconv"
 	"strings"
+
+	"github.com/labring/lvscare/pkg/exec"
+	"github.com/labring/lvscare/pkg/version"
 )
 
 // Interface is an injectable interface for running ipvs commands.  Implementations must be goroutine-safe.

@@ -17,7 +17,6 @@ limitations under the License.
 package version
 
 import (
-	"bytes"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -94,123 +93,16 @@ func ParseGeneric(str string) (*Version, error) {
 	return parse(str, false)
 }
 
-// MustParseGeneric is like ParseGeneric except that it panics on error
-func MustParseGeneric(str string) *Version {
-	v, err := ParseGeneric(str)
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
-// ParseSemantic parses a version string that exactly obeys the syntax and semantics of
-// the "Semantic Versioning" specification (http://semver.org/) (although it ignores
-// leading and trailing whitespace, and allows the version to be preceded by "v"). For
-// version strings that are not guaranteed to obey the Semantic Versioning syntax, use
-// ParseGeneric.
-func ParseSemantic(str string) (*Version, error) {
-	return parse(str, true)
-}
-
-// MustParseSemantic is like ParseSemantic except that it panics on error
-func MustParseSemantic(str string) *Version {
-	v, err := ParseSemantic(str)
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
-// Major returns the major release number
-func (v *Version) Major() uint {
-	return v.components[0]
-}
-
-// Minor returns the minor release number
-func (v *Version) Minor() uint {
-	return v.components[1]
-}
-
-// Patch returns the patch release number if v is a Semantic Version, or 0
-func (v *Version) Patch() uint {
-	if len(v.components) < 3 {
-		return 0
-	}
-	return v.components[2]
-}
-
-// BuildMetadata returns the build metadata, if v is a Semantic Version, or ""
-func (v *Version) BuildMetadata() string {
-	return v.buildMetadata
-}
-
-// PreRelease returns the prerelease metadata, if v is a Semantic Version, or ""
-func (v *Version) PreRelease() string {
-	return v.preRelease
-}
-
-// Components returns the version number components
-func (v *Version) Components() []uint {
-	return v.components
-}
-
-// WithMajor returns copy of the version object with requested major number
-func (v *Version) WithMajor(major uint) *Version {
-	result := *v
-	result.components = []uint{major, v.Minor(), v.Patch()}
-	return &result
-}
-
-// WithMinor returns copy of the version object with requested minor number
-func (v *Version) WithMinor(minor uint) *Version {
-	result := *v
-	result.components = []uint{v.Major(), minor, v.Patch()}
-	return &result
-}
-
-// WithPatch returns copy of the version object with requested patch number
-func (v *Version) WithPatch(patch uint) *Version {
-	result := *v
-	result.components = []uint{v.Major(), v.Minor(), patch}
-	return &result
-}
-
-// WithPreRelease returns copy of the version object with requested prerelease
-func (v *Version) WithPreRelease(preRelease string) *Version {
-	result := *v
-	result.components = []uint{v.Major(), v.Minor(), v.Patch()}
-	result.preRelease = preRelease
-	return &result
-}
-
-// String converts a Version back to a string; note that for versions parsed with
-// ParseGeneric, this will not include the trailing uninterpreted portion of the version
-// number.
-func (v *Version) String() string {
-	var buffer bytes.Buffer
-
-	for i, comp := range v.components {
-		if i > 0 {
-			buffer.WriteString(".")
-		}
-		buffer.WriteString(fmt.Sprintf("%d", comp))
-	}
-	if v.preRelease != "" {
-		buffer.WriteString("-")
-		buffer.WriteString(v.preRelease)
-	}
-	if v.buildMetadata != "" {
-		buffer.WriteString("+")
-		buffer.WriteString(v.buildMetadata)
-	}
-
-	return buffer.String()
+// LessThan tests if a version is less than a given version. (It is exactly the opposite
+// of AtLeast, for situations where asking "is v too old?" makes more sense than asking
+// "is v new enough?".)
+func (v *Version) LessThan(other *Version) bool {
+	return v.compareInternal(other) == -1
 }
 
 // compareInternal returns -1 if v is less than other, 1 if it is greater than other, or 0
 // if they are equal
 func (v *Version) compareInternal(other *Version) int {
-
 	vLen := len(v.components)
 	oLen := len(other.components)
 	for i := 0; i < vLen && i < oLen; i++ {
@@ -285,30 +177,4 @@ func onlyZeros(array []uint) bool {
 		}
 	}
 	return true
-}
-
-// AtLeast tests if a version is at least equal to a given minimum version. If both
-// Versions are Semantic Versions, this will use the Semantic Version comparison
-// algorithm. Otherwise, it will compare only the numeric components, with non-present
-// components being considered "0" (ie, "1.4" is equal to "1.4.0").
-func (v *Version) AtLeast(min *Version) bool {
-	return v.compareInternal(min) != -1
-}
-
-// LessThan tests if a version is less than a given version. (It is exactly the opposite
-// of AtLeast, for situations where asking "is v too old?" makes more sense than asking
-// "is v new enough?".)
-func (v *Version) LessThan(other *Version) bool {
-	return v.compareInternal(other) == -1
-}
-
-// Compare compares v against a version string (which will be parsed as either Semantic
-// or non-Semantic depending on v). On success it returns -1 if v is less than other, 1 if
-// it is greater than other, or 0 if they are equal.
-func (v *Version) Compare(other string) (int, error) {
-	ov, err := parse(other, v.semver)
-	if err != nil {
-		return 0, err
-	}
-	return v.compareInternal(ov), nil
 }
