@@ -1,6 +1,6 @@
 module github.com/labring/lvscare
 
-go 1.17
+go 1.18
 
 replace github.com/vishvananda/netlink => github.com/vishvananda/netlink v1.1.0
 
@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/vishvananda/netns v0.0.0-20210104183010-2eb08e3e575f // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
@@ -22,8 +23,4 @@ require (
 
 require github.com/labring/sealos v0.0.0-00010101000000-000000000000
 
-replace (
-	github.com/labring/image-cri-shim => ../image-cri-shim
-	github.com/labring/lvscare => ../lvscare
-	github.com/labring/sealos => ../../../../../
-)
+replace github.com/labring/sealos => ../../../../../
