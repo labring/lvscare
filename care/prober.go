@@ -37,6 +37,7 @@ type Prober interface {
 type httpProber struct {
 	HealthPath         string
 	HealthScheme       string
+	HealthPort         int
 	Method             string
 	Headers            map[string]string
 	Body               string
@@ -51,6 +52,7 @@ type httpProber struct {
 func (p *httpProber) RegisterFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&p.HealthPath, "health-path", "/healthz", "url path to probed")
 	fs.StringVar(&p.HealthScheme, "health-schem", "https", "http scheme for prober")
+	fs.IntVar(&p.HealthPort, "health-port", int, "http port for prober")
 	fs.StringVar(&p.Method, "health-req-method", "GET", "http request method")
 	fs.StringVar(&p.Body, "health-req-body", "", "body to send for health checker")
 	fs.StringToStringVar(&p.Headers, "health-req-headers", map[string]string{}, "http request headers")
@@ -83,6 +85,7 @@ func (p *httpProber) Probe(host, port string) error {
 			},
 		}
 	}
+	if p.HealthPort != nil { port = p.HealthPort }
 	uri := &url.URL{
 		Scheme: p.HealthScheme,
 		Host:   net.JoinHostPort(host, port),
